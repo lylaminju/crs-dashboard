@@ -543,6 +543,8 @@ expect(css.includes("transition: width 620ms cubic-bezier"), "breakdownBars.smoo
 expect(css.includes("will-change: width"), "breakdownBars.widthWillChange");
 expect(html.includes('class="score-value score-roller"'), "scoreRoller.mainScoreUsesRoller");
 expect(html.includes('class="score-roller polygon-score"'), "scoreRoller.polygonScoreUsesRoller");
+expect(html.includes("Copyright 2026 Minju Park. All rights reserved."), "footer.copyrightText");
+expect(css.includes(".site-footer"), "footer.styles");
 expect(script.includes("renderRollingNumber(document.getElementById(\"totalScore\"), result.total)"), "scoreRoller.mainRenderPath");
 expect(script.includes("renderRollingNumber(document.getElementById(\"polygonScore\"), result.total)"), "scoreRoller.polygonRenderPath");
 expect(css.includes("@keyframes scoreDigitRoll"), "scoreRoller.keyframes");

@@ -341,6 +341,8 @@ const stateKeys = Object.keys(DEFAULT_STATE).join(" ").toLowerCase();
 expect(!stateKeys.includes("job") && !stateKeys.includes("offer"), "jobOfferInvariant.stateKey");
 expect(!JSON.stringify(scoreProfile(DEFAULT_STATE)).toLowerCase().match(/job|offer/), "jobOfferInvariant.scorePath");
 expect(!html.match(/data-field="[^"]*(job|offer)/i), "jobOfferInvariant.control");
+expect(html.includes('<p class="source-note">Job-offer CRS points are not included'), "jobOfferInvariant.sourceNoteParagraph");
+expect(css.includes(".source-note"), "jobOfferInvariant.sourceNoteStyles");
 
 const storedState = sanitizeStoredState({
   maritalStatus: "single",
@@ -552,6 +554,10 @@ expect(css.includes("--active-bg: rgba(37, 99, 235, 0.12);"), "inputButtons.ligh
 expect(!css.includes("--active-bg: linear-gradient"), "inputButtons.noActiveGradient");
 expect(script.includes("root.dataset.breakdownSignature"), "breakdownBars.preservesRows");
 expect(script.includes("updateBreakdownBars(root, rows)"), "breakdownBars.updatesExistingRows");
+expect(css.includes(".bar-row {\n  display: contents;"), "breakdownBars.sharedParentGridRows");
+expect(css.includes("grid-template-columns: 144px minmax(0, 1fr) max-content"), "breakdownBars.sharedContentValueColumn");
+expect(css.includes("column-gap: 15px"), "breakdownBars.columnGap");
+expect(css.includes("white-space: nowrap"), "breakdownBars.labelNoWrap");
 expect(css.includes("transition: width 620ms cubic-bezier"), "breakdownBars.smoothWidthTransition");
 expect(css.includes("will-change: width"), "breakdownBars.widthWillChange");
 expect(html.includes('class="score-value score-roller"'), "scoreRoller.mainScoreUsesRoller");

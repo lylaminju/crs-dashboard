@@ -627,7 +627,10 @@ select:focus {
 
 .breakdown {
   display: grid;
-  gap: 11px;
+  grid-template-columns: 144px minmax(0, 1fr) max-content;
+  column-gap: 15px;
+  row-gap: 11px;
+  align-items: center;
   margin-bottom: 22px;
 }
 
@@ -644,16 +647,14 @@ select:focus {
 }
 
 .bar-row {
-  display: grid;
-  grid-template-columns: 170px 1fr 78px;
-  gap: 12px;
-  align-items: center;
+  display: contents;
 }
 
 .bar-label {
   color: var(--muted);
   font-size: 13px;
   font-weight: 780;
+  white-space: nowrap;
 }
 
 .bar-track {
@@ -897,6 +898,15 @@ select:focus {
 .sources ul {
   margin: 8px 0 0;
   padding-left: 18px;
+}
+
+.source-note {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 9px 10px;
+  background: var(--subpanel-bg);
+  color: var(--muted);
 }
 
 .polygon-card {

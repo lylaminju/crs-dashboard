@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canada CRS Score Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div>
+        <h1>Express Entry CRS dashboard</h1>
+      </div>
+      <div class="topbar-actions">
+        <button type="button" class="theme-toggle" id="themeToggle" data-theme-mode="system" aria-label="Theme: System. Click to switch theme.">◐</button>
+        <button type="button" class="view-toggle" id="viewToggle" aria-pressed="false">Polygon view</button>
+      </div>
+    </header>
+
+    <section class="dashboard" aria-label="CRS dashboard">
+      <div class="rail controls">
+        <div class="section-title">
+          <h2>Factors</h2>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span>Marital status</span>
+            <small>Determines spouse path</small>
+          </div>
+          <div class="segmented" id="maritalControls"></div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span>Age</span>
+            <small>At invitation or profile date</small>
+          </div>
+          <div class="age-grid" id="ageControls"></div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <label for="education">Education</label>
+            <small>Highest assessed credential</small>
+          </div>
+          <select id="education" data-field="education"></select>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span>Official languages</span>
+            <small>Test-specific scores</small>
+          </div>
+          <div class="language-panel">
+            <div class="field">
+              <label for="firstTest">First official language test</label>
+              <select id="firstTest" data-field="firstTest"></select>
+            </div>
+            <div class="ability-grid" data-language-group="first">
+              <div class="field">
+                <label for="firstListening">Listening</label>
+                <select id="firstListening" data-field="firstListening" data-score-select="first"></select>
+              </div>
+              <div class="field">
+                <label for="firstReading">Reading</label>
+                <select id="firstReading" data-field="firstReading" data-score-select="first"></select>
+              </div>
+              <div class="field">
+                <label for="firstWriting">Writing</label>
+                <select id="firstWriting" data-field="firstWriting" data-score-select="first"></select>
+              </div>
+              <div class="field">
+                <label for="firstSpeaking">Speaking</label>
+                <select id="firstSpeaking" data-field="firstSpeaking" data-score-select="first"></select>
+              </div>
+            </div>
+          </div>
+          <div class="language-panel">
+            <div class="field">
+              <label for="secondTest">Second official language test</label>
+              <select id="secondTest" data-field="secondTest"></select>
+            </div>
+            <div class="ability-grid" data-language-group="second" data-hide-when-no-test hidden>
+              <div class="field">
+                <label for="secondListening">Listening</label>
+                <select id="secondListening" data-field="secondListening" data-score-select="second"></select>
+              </div>
+              <div class="field">
+                <label for="secondReading">Reading</label>
+                <select id="secondReading" data-field="secondReading" data-score-select="second"></select>
+              </div>
+              <div class="field">
+                <label for="secondWriting">Writing</label>
+                <select id="secondWriting" data-field="secondWriting" data-score-select="second"></select>
+              </div>
+              <div class="field">
+                <label for="secondSpeaking">Speaking</label>
+                <select id="secondSpeaking" data-field="secondSpeaking" data-score-select="second"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span>Work experience</span>
+            <small>Skilled TEER 0, 1, 2 or 3</small>
+          </div>
+          <div class="language-panel">
+            <div class="factor-label">
+              <span>Canadian skilled work</span>
+              <small>Last 10 years</small>
+            </div>
+            <div class="work-grid" id="canadianWorkControls"></div>
+          </div>
+          <div class="language-panel">
+            <div class="factor-label">
+              <span>Foreign skilled work</span>
+              <small>Total years</small>
+            </div>
+            <div class="work-grid" id="foreignWorkControls"></div>
+          </div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span>Additional factors</span>
+            <small>Maximum 600 additional points</small>
+          </div>
+          <div class="select-grid">
+            <div class="field">
+              <label for="canadianEducation">Canadian education</label>
+              <select id="canadianEducation" data-field="canadianEducation"></select>
+            </div>
+          </div>
+          <div class="switch-grid additional-switches">
+            <label class="switch"><input type="checkbox" data-field="sibling"> Sibling in Canada</label>
+            <label class="switch"><input type="checkbox" data-field="nomination"> Provincial nomination</label>
+            <label class="switch"><input type="checkbox" data-field="certificate"> Certificate of qualification</label>
+          </div>
+        </div>
+
+        <div class="factor-group spouse-block" id="spouseBlock">
+          <div class="factor-label">
+            <span>Spouse or partner factors</span>
+            <small>Only when accompanying</small>
+          </div>
+          <div class="select-grid">
+            <div class="field full">
+              <label for="spouseEducation">Spouse education</label>
+              <select id="spouseEducation" data-field="spouseEducation"></select>
+            </div>
+          </div>
+          <div class="language-panel">
+            <div class="field">
+              <label for="spouseTest">Spouse language test</label>
+              <select id="spouseTest" data-field="spouseTest"></select>
+            </div>
+            <div class="ability-grid" data-language-group="spouse">
+              <div class="field">
+                <label for="spouseListening">Listening</label>
+                <select id="spouseListening" data-field="spouseListening" data-score-select="spouse"></select>
+              </div>
+              <div class="field">
+                <label for="spouseReading">Reading</label>
+                <select id="spouseReading" data-field="spouseReading" data-score-select="spouse"></select>
+              </div>
+              <div class="field">
+                <label for="spouseWriting">Writing</label>
+                <select id="spouseWriting" data-field="spouseWriting" data-score-select="spouse"></select>
+              </div>
+              <div class="field">
+                <label for="spouseSpeaking">Speaking</label>
+                <select id="spouseSpeaking" data-field="spouseSpeaking" data-score-select="spouse"></select>
+              </div>
+            </div>
+          </div>
+          <div class="language-panel">
+            <div class="factor-label">
+              <span>Spouse Canadian work</span>
+              <small>Last 10 years</small>
+            </div>
+            <div class="work-grid" id="spouseCanadianWorkControls"></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="rail score-rail" aria-label="Score results">
+        <div class="score-view" id="scoreView">
+          <div class="score-summary">
+            <div class="score-top">
+              <section class="score-number">
+                <div class="score-label">
+                  <span>Total CRS score</span>
+                </div>
+                <div class="score-value score-roller" id="totalScore" aria-live="polite" aria-label="0">
+                  <span class="score-static-digit" aria-hidden="true">0</span>
+                </div>
+              </section>
+            </div>
+
+            <section class="breakdown-panel" aria-label="Score breakdown">
+              <div class="section-title">
+                <h2>Breakdown</h2>
+                <span class="pill">Out of 1,200</span>
+              </div>
+              <div class="breakdown" id="breakdown"></div>
+            </section>
+          </div>
+
+          <div class="detail-grid" id="detailGrid"></div>
+
+          <div class="section-title">
+            <h2>Score Opportunities</h2>
+          </div>
+          <div class="scenario-grid" id="scenarios"></div>
+        </div>
+
+        <div class="polygon-view" id="polygonView" hidden>
+          <section class="polygon-card">
+            <div class="polygon-canvas">
+              <svg id="scorePolygon" viewBox="0 0 760 540" role="img" aria-labelledby="polygonTitle polygonDesc">
+                <title id="polygonTitle">CRS factor polygon</title>
+                <desc id="polygonDesc">A polygon view of the current CRS score with major score factors around the vertices.</desc>
+                <g id="polygonGrid"></g>
+                <polygon id="polygonShape" class="polygon-shape" points=""></polygon>
+                <polygon id="polygonOutline" class="polygon-outline" points=""></polygon>
+                <g id="polygonVertices"></g>
+                <foreignObject x="18" y="18" width="300" height="72">
+                  <div xmlns="http://www.w3.org/1999/xhtml" class="polygon-svg-toolbar-field">
+                    <label for="polygonMaritalStatus">Marital status</label>
+                    <select id="polygonMaritalStatus" data-polygon-field="maritalStatus"></select>
+                  </div>
+                </foreignObject>
+              </svg>
+              <div class="polygon-score-center">
+                <div class="score-roller polygon-score" id="polygonScore" aria-live="polite" aria-label="0">
+                  <span class="score-static-digit" aria-hidden="true">0</span>
+                </div>
+                <div class="polygon-score-label">Total CRS score</div>
+              </div>
+              <div class="polygon-editors" id="polygonEditors" aria-label="Polygon factor inputs"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="sources">
+          Official sources:
+          <p>Calculation guidance is based on the Canada.ca CRS pages below. Official Express Entry system results govern.</p>
+          <ul>
+            <li><a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score.html">Canada.ca - Express Entry: Check your score</a></li>
+            <li><a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html">Canada.ca - Comprehensive Ranking System criteria</a></li>
+          </ul>
+          Job-offer CRS points are not included because Canada.ca states they were removed as of March 25, 2025.
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

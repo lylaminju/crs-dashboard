@@ -168,6 +168,28 @@ expectEqual("frenchNclcNine.delta", frenchNine.delta, 72);
 expectEqual("frenchNclcNine.secondLanguage", componentDeltaByLabel(frenchNine, "Second official language"), 22);
 expectEqual("frenchNclcNine.additional", componentDeltaByLabel(frenchNine, "Additional points"), 50);
 
+const firstLanguageClbSixStart = fixtureState({
+  maritalStatus: "spouse-accompanying",
+  age: "30",
+  education: "bachelor",
+  ...languageFixture("first", "celpip", "D"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "1",
+  spouseEducation: "lessSecondary",
+  ...languageFixture("spouse", "none", "none"),
+  spouseCanadianWork: "0",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+const firstLanguageClbSeven = scenarioById(firstLanguageClbSixStart, "first-language-clb-7");
+expectEqual("firstLanguageOpportunity.clbSeven.delta", firstLanguageClbSeven.delta, 58);
+expectEqual("firstLanguageOpportunity.clbSeven.directLanguage", componentDeltaByLabel(firstLanguageClbSeven, "First official language"), 32);
+expectEqual("firstLanguageOpportunity.clbSeven.educationTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: education"), 13);
+expectEqual("firstLanguageOpportunity.clbSeven.foreignTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: foreign work"), 13);
+
 expectEqual(
   "secondOfficialLanguage.englishFirstOptions",
   secondOfficialLanguageTestOptions(fixtureState({ firstTest: "celpip" })).map((option) => option.value).join(","),
@@ -217,12 +239,18 @@ expectEqual("strategy.canadianWork1", scenarioById(strategyStart, "canadian-work
 expectEqual("strategy.canadianWork2", scenarioById(strategyStart, "canadian-work-two-years").delta, 71);
 expectEqual("strategy.frenchNclc7", scenarioById(strategyStart, "french-nclc-seven").delta, 62);
 expectEqual("strategy.frenchNclc9", scenarioById(strategyStart, "french-nclc-nine").delta, 72);
+expectEqual("strategy.firstLanguageClb10", scenarioById(strategyStart, "first-language-clb-10").delta, 3);
+expectEqual("strategy.firstLanguageClb10DirectLanguage", componentDeltaByLabel(scenarioById(strategyStart, "first-language-clb-10"), "First official language"), 3);
 expectEqual("strategy.canadianEducationOneTwo", scenarioById(strategyStart, "canadian-education-one-two").delta, 47);
 expectEqual("strategy.canadianEducationThreePlus", scenarioById(strategyStart, "canadian-education-three-plus").delta, 62);
 expectEqual("strategy.canadianMasters", scenarioById(strategyStart, "canadian-masters").delta, 69);
 expectEqual("strategy.ecaTwoOrMore", scenarioById(strategyStart, "eca-two-or-more").delta, 32);
 expectEqual("strategy.ecaMasters", scenarioById(strategyStart, "eca-masters").delta, 39);
 expectEqual("strategy.pnp", scenarioById(strategyStart, "provincial-nomination").delta, 600);
+expect(
+  scenarioDefinitions({ ...strategyStart, firstWriting: "H" }).every((scenario) => !scenario.id.startsWith("first-language-clb")),
+  "firstLanguageOpportunity.noCardAtClbTen"
+);
 
 const agePenaltyStart = { ...strategyStart, age: "27" };
 const canadianEducationThreePlusAt27 = scenarioById(agePenaltyStart, "canadian-education-three-plus");

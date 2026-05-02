@@ -559,6 +559,33 @@
     });
   }
 
+  function firstLanguageOpportunityTarget(state) {
+    return [7, 8, 9, 10].find((target) => languageClbList(state, "first").some((clb) => clb < target));
+  }
+
+  function firstLanguageName(state) {
+    const language = getLanguageTest(state, "first").language;
+    if (language === "english") return "English";
+    if (language === "french") return "French";
+    return "first language";
+  }
+
+  function clbTargetLabel(targetClb) {
+    return targetClb >= 10 ? "CLB 10+" : `CLB ${targetClb}+`;
+  }
+
+  function firstLanguageOpportunityDefinition(state) {
+    const targetClb = firstLanguageOpportunityTarget(state);
+    if (!targetClb) return null;
+    return {
+      id: `first-language-clb-${targetClb}`,
+      title: `Raise ${firstLanguageName(state)} to ${clbTargetLabel(targetClb)} in all four abilities`,
+      mutate(next) {
+        raiseLanguageGroupToClb(next, "first", targetClb);
+      }
+    };
+  }
+
   const EDUCATION_RANK = {
     lessSecondary: 0,
     secondary: 1,
@@ -600,6 +627,7 @@
   }
 
   function scenarioDefinitions(state) {
+    const firstLanguageOpportunity = firstLanguageOpportunityDefinition(state);
     return [
       {
         id: "canadian-work-year",
@@ -617,13 +645,7 @@
           if (numeric(next.canadianWork) < 2) next.canadianWork = "2";
         }
       },
-      {
-        id: "language-clb-nine",
-        title: "Raise first language to CLB 9 in all four abilities",
-        mutate(next) {
-          raiseLanguageGroupToClb(next, "first", 9);
-        }
-      },
+      ...(firstLanguageOpportunity ? [firstLanguageOpportunity] : []),
       {
         id: "french-nclc-seven",
         title: "Reach French NCLC 7 in all four abilities",

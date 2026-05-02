@@ -194,6 +194,32 @@ expect(
   scenarioDefinitions(firstLanguageClbSixStart).some((scenario) => scenario.title === "Raise English to CLB 7+ in all four abilities"),
   "firstLanguageOpportunity.englishUsesClbLabel"
 );
+expectEqual(
+  "firstLanguageOpportunity.allFutureMilestones",
+  scenarioDefinitions(firstLanguageClbSixStart)
+    .filter((scenario) => scenario.id.startsWith("first-language-clb"))
+    .map((scenario) => scenario.id)
+    .join(","),
+  "first-language-clb-7,first-language-clb-8,first-language-clb-9,first-language-clb-10"
+);
+
+const firstLanguageClbSevenStart = fixtureState({
+  maritalStatus: "single",
+  age: "30",
+  education: "bachelor",
+  ...languageFixture("first", "celpip", "E"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "3",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+const firstLanguageClbNine = scenarioById(firstLanguageClbSevenStart, "first-language-clb-9");
+expectEqual("firstLanguageOpportunity.clbNine.delta", firstLanguageClbNine.delta, 93);
+expectEqual("firstLanguageOpportunity.clbNine.educationTransfer", componentDeltaByLabel(firstLanguageClbNine, "Skill transferability: education"), 12);
+expectEqual("firstLanguageOpportunity.clbNine.foreignTransfer", componentDeltaByLabel(firstLanguageClbNine, "Skill transferability: foreign work"), 25);
 
 const firstLanguageFrenchStart = {
   ...firstLanguageClbSixStart,

@@ -11,8 +11,7 @@
     ["17-less", "≤17"],
     ["18", "18"],
     ["19", "19"],
-    ["20-25", "20-25"],
-    ["26", "26"],
+    ["20-26", "20-26"],
     ["27", "27"],
     ["28", "28"],
     ["29", "29"],
@@ -38,8 +37,7 @@
     "17-less": { spouse: 0, single: 0 },
     "18": { spouse: 90, single: 99 },
     "19": { spouse: 95, single: 105 },
-    "20-25": { spouse: 100, single: 110 },
-    "26": { spouse: 100, single: 110 },
+    "20-26": { spouse: 100, single: 110 },
     "27": { spouse: 100, single: 110 },
     "28": { spouse: 100, single: 110 },
     "29": { spouse: 100, single: 110 },
@@ -276,8 +274,8 @@
 
   function normalizeAgeKey(ageKey) {
     const age = numeric(ageKey);
-    if (ageKey === "20-29" || (Number.isFinite(age) && age >= 20 && age <= 25)) {
-      return "20-25";
+    if (ageKey === "20-25" || ageKey === "20-29" || (Number.isFinite(age) && age >= 20 && age <= 26)) {
+      return "20-26";
     }
     return AGE_POINTS[ageKey] ? ageKey : DEFAULT_STATE.age;
   }
@@ -613,6 +611,7 @@
 
   function ageNumber(ageKey) {
     if (ageKey === "17-less") return 17;
+    if (ageKey === "20-26") return 26;
     if (ageKey === "20-25") return 25;
     if (ageKey === "45-plus") return 45;
     return numeric(ageKey);
@@ -620,7 +619,7 @@
 
   function ageKeyFromNumber(age) {
     if (age <= 17) return "17-less";
-    if (age >= 20 && age <= 25) return "20-25";
+    if (age >= 20 && age <= 26) return "20-26";
     if (age >= 45) return "45-plus";
     return String(age);
   }
@@ -697,15 +696,17 @@
       },
       {
         id: "eca-two-or-more",
-        title: "ECA upgrade: two or more credentials",
+        title: "Complete additional non-Canadian credential and ECA",
         mutate(next) {
+          advanceAge(next, 1);
           setEducationAtLeast(next, "twoOrMore");
         }
       },
       {
         id: "eca-masters",
-        title: "ECA upgrade: master's credential",
+        title: "Complete non-Canadian master's credential and ECA",
         mutate(next) {
+          advanceAge(next, 2);
           setEducationAtLeast(next, "masters");
         }
       },
@@ -1240,6 +1241,10 @@
       .map((definition) => buildScenario(state, definition))
       .filter((scenario) => scenario.delta > 0)
       .sort((a, b) => b.delta - a.delta);
+    const opportunityAgeNote = document.getElementById("opportunityAgeNote");
+    if (opportunityAgeNote) {
+      opportunityAgeNote.hidden = ageNumber(state.age) < 27;
+    }
     document.getElementById("scenarios").innerHTML = scenarios.map((scenario) => `
       <article class="scenario">
         <div class="scenario-head">

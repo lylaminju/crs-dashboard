@@ -296,6 +296,7 @@ expectEqual("strategy.canadianEducationThreePlus", scenarioById(strategyStart, "
 expectEqual("strategy.canadianMasters", scenarioById(strategyStart, "canadian-masters").delta, 69);
 expectEqual("strategy.ecaTwoOrMore", scenarioById(strategyStart, "eca-two-or-more").delta, 32);
 expectEqual("strategy.ecaMasters", scenarioById(strategyStart, "eca-masters").delta, 39);
+expectEqual("strategy.ecaMastersTitle", scenarioById(strategyStart, "eca-masters").title, "Complete non-Canadian master's credential and ECA");
 expectEqual("strategy.pnp", scenarioById(strategyStart, "provincial-nomination").delta, 600);
 expect(
   scenarioDefinitions({ ...strategyStart, firstWriting: "H" }).every((scenario) => !scenario.id.startsWith("first-language-clb")),
@@ -311,6 +312,9 @@ const agePenaltyAt30 = { ...strategyStart, age: "30" };
 const canadianMastersAt30 = scenarioById(agePenaltyAt30, "canadian-masters");
 expectEqual("agePenalty.canadianMasters.delta", canadianMastersAt30.delta, 59);
 expectEqual("agePenalty.canadianMasters.age", componentDeltaByLabel(canadianMastersAt30, "Age"), -10);
+const ecaMastersAt30 = scenarioById(agePenaltyAt30, "eca-masters");
+expectEqual("agePenalty.ecaMasters.delta", ecaMastersAt30.delta, 29);
+expectEqual("agePenalty.ecaMasters.age", componentDeltaByLabel(ecaMastersAt30, "Age"), -10);
 
 const sortedStrategyDeltas = scenarioDefinitions(strategyStart)
   .map((definition) => buildScenario(strategyStart, definition))
@@ -348,7 +352,9 @@ const storedState = sanitizeStoredState({
 expectEqual("storageRestore.age", storedState.age, "44");
 expectEqual("storageRestore.education", storedState.education, "masters");
 expectEqual("storageRestore.nomination", storedState.nomination, true);
-expectEqual("storageRestore.compactAgeRange", sanitizeStoredState({ age: "23" }).age, "20-25");
+expectEqual("storageRestore.compactAgeRange", sanitizeStoredState({ age: "23" }).age, "20-26");
+expectEqual("storageRestore.previousCompactAgeRange", sanitizeStoredState({ age: "20-25" }).age, "20-26");
+expectEqual("storageRestore.ageTwentySixCompacted", sanitizeStoredState({ age: "26" }).age, "20-26");
 const storagePayload = {
   factors: storedState,
   score: scoreProfile(storedState)
@@ -365,15 +371,20 @@ expect(!html.match(/<script>\s*[\s\S]*?\s*<\/script>/), "productionUi.noInlineSc
 expect(script.includes("globalThis.CRS_DASHBOARD = api"), "productionUi.externalScriptExportsApi");
 expect(!html.includes("Desktop workspace"), "productionUi.noDesktopWorkspacePill");
 expect(html.includes("Score Opportunities"), "productionUi.scoreOpportunitiesHeading");
+expect(html.includes("Age decreases shown in future paths are planning estimates"), "productionUi.opportunityAgeNote");
+expect(html.includes('id="opportunityAgeNote" hidden'), "productionUi.opportunityAgeNoteHiddenByDefault");
+expect(script.includes('opportunityAgeNote.hidden = ageNumber(state.age) < 27'), "productionUi.opportunityAgeNoteShownAtTwentySeven");
 expect(!html.includes("What-if scenarios"), "productionUi.noWhatIfHeading");
 expect(script.includes('class="scenario-metrics"'), "productionUi.scenarioHeaderMetrics");
 expect(script.includes('class="scenario-projected"'), "productionUi.scenarioProjectedBesideDelta");
 expect(!script.includes("Projected score"), "productionUi.noProjectedScoreLabel");
 expect(!script.includes("scenario-scoreline"), "productionUi.noScenarioScorelineMarkup");
 expect(css.includes(".scenario-metrics"), "productionUi.scenarioMetricsStyles");
+expect(css.includes(".opportunity-note"), "productionUi.opportunityNoteStyles");
 expect(!css.includes(".scenario-scoreline"), "productionUi.noScenarioScorelineCss");
 expect(script.includes('["17-less", "≤17"]'), "productionUi.compactAgeSeventeenLabel");
-expect(script.includes('["20-25", "20-25"]'), "productionUi.compactAgeTwentyToTwentyFiveLabel");
+expect(script.includes('["20-26", "20-26"]'), "productionUi.compactAgeTwentyToTwentySixLabel");
+expect(!script.includes('["26", "26"]'), "productionUi.noStandaloneAgeTwentySixButton");
 expect(!script.includes('["20", "20"]'), "productionUi.noIndividualAgeTwentyButton");
 expect(!script.includes("17 or less"), "productionUi.noLongAgeSeventeenLabel");
 expect(css.includes("grid-template-columns: repeat(8, 54px)"), "productionUi.tightAgeButtonColumns");
@@ -527,8 +538,8 @@ expect(css.includes(".detail-score.detail-score-down"), "detailChangeAnimation.d
 expect(css.includes("font-size: 17px"), "detailChangeAnimation.largerArrow");
 expect(css.includes(".detail-score.detail-score-up .detail-arrow"), "detailChangeAnimation.arrowDirectUpColorAnimation");
 expect(css.includes(".detail-score.detail-score-down .detail-arrow"), "detailChangeAnimation.arrowDirectDownColorAnimation");
-expect(css.includes("detailValueUp 2400ms ease both"), "detailChangeAnimation.arrowUsesUpColorKeyframes");
-expect(css.includes("detailValueDown 2400ms ease both"), "detailChangeAnimation.arrowUsesDownColorKeyframes");
+expect(css.includes("detailValueUp 3500ms ease both"), "detailChangeAnimation.arrowUsesUpColorKeyframes");
+expect(css.includes("detailValueDown 3500ms ease both"), "detailChangeAnimation.arrowUsesDownColorKeyframes");
 expect(css.includes("color: inherit"), "detailChangeAnimation.numberInheritsWrapperColor");
 expect(css.includes("@keyframes detailArrowFade"), "detailChangeAnimation.arrowKeyframes");
 expect(css.includes("opacity: 0;"), "detailChangeAnimation.arrowFadeOut");

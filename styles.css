@@ -1117,8 +1117,9 @@ select:focus {
 
 .polygon-editor-ability-grid {
   display: grid;
-  grid-template-columns: repeat(4, 68px);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 5px;
+  width: 100%;
 }
 
 .polygon-editor-field label {

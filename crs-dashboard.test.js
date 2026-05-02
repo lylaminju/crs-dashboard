@@ -25,6 +25,7 @@ const {
   polygonEditorControls,
   polygonAbilityLabel,
   languageScoreOptions,
+  languageScoreOptionLabel,
   secondOfficialLanguageTestOptions,
   normalizeThemeMode,
   nextThemeMode,
@@ -201,6 +202,16 @@ const firstLanguageFrenchStart = {
 expect(
   scenarioDefinitions(firstLanguageFrenchStart).some((scenario) => scenario.title === "Raise French to NCLC 8+ in all four abilities"),
   "firstLanguageOpportunity.frenchUsesNclcLabel"
+);
+expectEqual(
+  "languageDropdown.englishBenchmarkLabel",
+  languageScoreOptionLabel({ language: "english" }, { clb: 7, listening: "6.0" }, "listening"),
+  "6.0 (CLB 7)"
+);
+expectEqual(
+  "languageDropdown.frenchBenchmarkLabel",
+  languageScoreOptionLabel({ language: "french" }, { clb: 7, listening: "249-279" }, "listening"),
+  "249-279 (NCLC 7)"
 );
 
 expectEqual(

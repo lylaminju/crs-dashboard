@@ -571,8 +571,17 @@
   }
 
   function languageBenchmarkLabel(state, prefix, targetClb) {
-    const benchmark = getLanguageTest(state, prefix).language === "french" ? "NCLC" : "CLB";
+    const benchmark = languageBenchmarkAcronym(getLanguageTest(state, prefix));
     return targetClb >= 10 ? `${benchmark} 10+` : `${benchmark} ${targetClb}+`;
+  }
+
+  function languageBenchmarkAcronym(test) {
+    return test.language === "french" ? "NCLC" : "CLB";
+  }
+
+  function languageScoreOptionLabel(test, score, ability) {
+    const scoreLabel = score[ability];
+    return score.clb ? `${scoreLabel} (${languageBenchmarkAcronym(test)} ${score.clb})` : scoreLabel;
   }
 
   function firstLanguageOpportunityDefinition(state) {
@@ -943,7 +952,7 @@
       document.querySelectorAll(`[data-score-select="${prefix}"]`).forEach((select) => {
         const ability = abilityFromField(select.dataset.field, prefix);
         select.innerHTML = test.scores.map((score) => {
-          const label = `${score[ability]}${score.clb ? ` (CLB ${score.clb})` : ""}`;
+          const label = languageScoreOptionLabel(test, score, ability);
           return `<option value="${score.value}">${label}</option>`;
         }).join("");
         select.disabled = test.value === "none";
@@ -1667,6 +1676,7 @@
     polygonEditorControls,
     polygonAbilityLabel,
     languageScoreOptions,
+    languageScoreOptionLabel,
     secondOfficialLanguageTestOptions,
     normalizeThemeMode,
     nextThemeMode,

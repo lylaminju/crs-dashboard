@@ -1268,9 +1268,9 @@
     ];
 
     factors.push(
-      { key: "transferability", label: "Transferability", value: result.breakdown.transferability, cap: result.caps.transferability },
+      { key: "additional", label: "Additional", value: result.breakdown.additional, cap: result.caps.additional },
       ...(result.spousePath ? [{ key: "spouse", label: "Spouse factors", value: result.breakdown.spouse, cap: 40 }] : []),
-      { key: "additional", label: "Additional", value: result.breakdown.additional, cap: result.caps.additional }
+      { key: "transferability", label: "Transferability", value: result.breakdown.transferability, cap: result.caps.transferability }
     );
 
     return factors;

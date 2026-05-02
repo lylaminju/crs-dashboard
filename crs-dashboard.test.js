@@ -451,9 +451,10 @@ expect(
 );
 const spousePolygonKeys = polygonFactors(spousePathBaseline).map((factor) => factor.key);
 expect(
-  spousePolygonKeys.indexOf("transferability") < spousePolygonKeys.indexOf("spouse"),
-  "viewMode.transferabilityBeforeSpouseInPolygon"
+  spousePolygonKeys.indexOf("additional") < spousePolygonKeys.indexOf("transferability"),
+  "viewMode.additionalBeforeTransferabilityInPolygon"
 );
+expectEqual("viewMode.spouseBetweenSwappedPolygonFactors", spousePolygonKeys.join(","), "age,education,languages,canadianWork,additional,spouse,transferability");
 expect(polygonEditorControls("age").includes('data-polygon-field="age"'), "polygonEditors.ageInput");
 expect(!polygonEditorControls("age").includes("<label"), "polygonEditors.ageNoRepeatedLabel");
 expect(polygonEditorControls("age").includes('aria-label="Age"'), "polygonEditors.ageAccessibleSelect");

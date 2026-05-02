@@ -570,8 +570,9 @@
     return "first language";
   }
 
-  function clbTargetLabel(targetClb) {
-    return targetClb >= 10 ? "CLB 10+" : `CLB ${targetClb}+`;
+  function languageBenchmarkLabel(state, prefix, targetClb) {
+    const benchmark = getLanguageTest(state, prefix).language === "french" ? "NCLC" : "CLB";
+    return targetClb >= 10 ? `${benchmark} 10+` : `${benchmark} ${targetClb}+`;
   }
 
   function firstLanguageOpportunityDefinition(state) {
@@ -579,7 +580,7 @@
     if (!targetClb) return null;
     return {
       id: `first-language-clb-${targetClb}`,
-      title: `Raise ${firstLanguageName(state)} to ${clbTargetLabel(targetClb)} in all four abilities`,
+      title: `Raise ${firstLanguageName(state)} to ${languageBenchmarkLabel(state, "first", targetClb)} in all four abilities`,
       mutate(next) {
         raiseLanguageGroupToClb(next, "first", targetClb);
       }

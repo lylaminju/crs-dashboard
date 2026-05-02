@@ -189,6 +189,19 @@ expectEqual("firstLanguageOpportunity.clbSeven.delta", firstLanguageClbSeven.del
 expectEqual("firstLanguageOpportunity.clbSeven.directLanguage", componentDeltaByLabel(firstLanguageClbSeven, "First official language"), 32);
 expectEqual("firstLanguageOpportunity.clbSeven.educationTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: education"), 13);
 expectEqual("firstLanguageOpportunity.clbSeven.foreignTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: foreign work"), 13);
+expect(
+  scenarioDefinitions(firstLanguageClbSixStart).some((scenario) => scenario.title === "Raise English to CLB 7+ in all four abilities"),
+  "firstLanguageOpportunity.englishUsesClbLabel"
+);
+
+const firstLanguageFrenchStart = {
+  ...firstLanguageClbSixStart,
+  ...languageFixture("first", "tef", "E")
+};
+expect(
+  scenarioDefinitions(firstLanguageFrenchStart).some((scenario) => scenario.title === "Raise French to NCLC 8+ in all four abilities"),
+  "firstLanguageOpportunity.frenchUsesNclcLabel"
+);
 
 expectEqual(
   "secondOfficialLanguage.englishFirstOptions",

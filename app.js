@@ -907,6 +907,7 @@
   let state = loadStoredState();
   let themeMode = loadStoredThemeMode();
   let lastRenderedResult = null;
+  let shouldPersistState = false;
 
   function loadStoredState() {
     if (!storageAvailable()) return cloneState(DEFAULT_STATE);
@@ -962,6 +963,10 @@
     } catch (error) {
       // Storage can fail in private browsing or locked-down file contexts.
     }
+  }
+
+  function markStateChangedForPersistence() {
+    shouldPersistState = true;
   }
 
   function storageAvailable() {
@@ -1150,6 +1155,7 @@
     document.getElementById("resetButton").addEventListener("click", () => {
       state = cloneState(DEFAULT_STATE);
       lastRenderedResult = null;
+      shouldPersistState = false;
       clearStoredState();
       render();
     });
@@ -1172,6 +1178,7 @@
       const control = event.target.closest("[data-polygon-field]");
       if (!control) return;
       applyPolygonControl(control);
+      markStateChangedForPersistence();
       render();
     });
 
@@ -1179,6 +1186,7 @@
       const button = event.target.closest("[data-marital]");
       if (!button) return;
       state.maritalStatus = button.dataset.marital;
+      markStateChangedForPersistence();
       render();
     });
 
@@ -1186,6 +1194,7 @@
       const button = event.target.closest("[data-age]");
       if (!button) return;
       state.age = button.dataset.age;
+      markStateChangedForPersistence();
       render();
     });
 
@@ -1194,6 +1203,7 @@
         const button = event.target.closest("[data-work-field]");
         if (!button) return;
         state[button.dataset.workField] = button.dataset.workValue;
+        markStateChangedForPersistence();
         render();
       });
     });
@@ -1206,6 +1216,7 @@
           const prefix = field.replace("Test", "");
           resetLanguageScores(prefix);
         }
+        markStateChangedForPersistence();
         render();
       });
     });
@@ -1315,7 +1326,9 @@
     renderDetails(result, lastRenderedResult);
     renderScenarios();
     syncViewMode(result);
-    persistState(result);
+    if (shouldPersistState) {
+      persistState(result);
+    }
     lastRenderedResult = result;
   }
 

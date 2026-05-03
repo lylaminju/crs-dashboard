@@ -488,6 +488,11 @@ const storagePayload = {
 };
 expect(Boolean(storagePayload.factors), "storagePayload.factors");
 expect(typeof storagePayload.score.total === "number", "storagePayload.score.total");
+expect(script.includes("let shouldPersistState = false;"), "storagePersistence.initialRenderDoesNotPersist");
+expect(script.includes("function markStateChangedForPersistence()"), "storagePersistence.hasExplicitChangeMarker");
+expect(script.includes("shouldPersistState = false;\n      clearStoredState();"), "storagePersistence.resetKeepsStorageClear");
+expect(script.includes("if (shouldPersistState) {\n      persistState(result);\n    }"), "storagePersistence.renderPersistsOnlyAfterChange");
+expect(script.includes("markStateChangedForPersistence();\n      render();"), "storagePersistence.factorEventsMarkChanged");
 
 expect(!html.includes("Fixture checks"), "productionUi.fixtureCopy");
 expect(!html.includes("Passing ("), "productionUi.passingLabel");

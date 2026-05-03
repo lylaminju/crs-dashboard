@@ -631,6 +631,7 @@ select:focus {
 }
 
 .score-summary {
+  --score-summary-card-min-height: 160px;
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
   gap: 18px;
@@ -639,6 +640,8 @@ select:focus {
 }
 
 .score-top {
+  display: grid;
+  height: 100%;
   margin-bottom: 0;
 }
 
@@ -647,7 +650,8 @@ select:focus {
   align-content: center;
   width: max-content;
   min-width: 214px;
-  min-height: 172px;
+  height: 100%;
+  min-height: var(--score-summary-card-min-height);
   border: 1px solid rgba(79, 140, 255, 0.32);
   border-radius: var(--radius);
   padding: 18px;
@@ -734,6 +738,7 @@ select:focus {
 
 .breakdown-panel {
   min-width: 0;
+  min-height: var(--score-summary-card-min-height);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 16px;

@@ -559,6 +559,9 @@ expect(!script.includes("scenario-scoreline"), "productionUi.noScenarioScoreline
 expect(css.includes(".scenario-metrics"), "productionUi.scenarioMetricsStyles");
 expect(css.includes(".opportunity-note"), "productionUi.opportunityNoteStyles");
 expect(!css.includes(".scenario-scoreline"), "productionUi.noScenarioScorelineCss");
+expect(css.includes("--score-summary-card-min-height: 160px;"), "productionUi.scoreSummarySharedStableHeight");
+expect(css.includes(".score-top {\n  display: grid;\n  height: 100%;"), "productionUi.scoreTopFillsStableHeight");
+expect(css.includes("min-height: var(--score-summary-card-min-height);"), "productionUi.scoreCardsUseSharedStableHeight");
 expect(css.includes("grid-template-columns: repeat(5, minmax(0, 1fr));"), "productionUi.detailGridDesktopFiveColumns");
 expect(css.includes(".detail span {\n  display: block;\n  margin-top: 7px;"), "productionUi.detailDesktopLabelStyleRestored");
 expect(css.includes(".detail-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));"), "responsive.detailGridMobileTwoColumns");

@@ -10,7 +10,7 @@
   <main class="page">
     <header class="topbar">
       <div>
-        <h1>Express Entry CRS dashboard</h1>
+        <h1><span>Express Entry</span><span>CRS dashboard</span></h1>
       </div>
       <div class="topbar-actions">
         <button type="button" class="theme-toggle" id="themeToggle" data-theme-mode="system" aria-label="Theme: System. Click to switch theme.">◐</button>
@@ -30,6 +30,9 @@
             <small>Determines spouse path</small>
           </div>
           <div class="segmented" id="maritalControls"></div>
+          <div class="field mobile-button-select">
+            <select id="maritalStatus" data-field="maritalStatus" aria-label="Marital status"></select>
+          </div>
         </div>
 
         <div class="factor-group">
@@ -38,6 +41,9 @@
             <small>At invitation or profile date</small>
           </div>
           <div class="age-grid" id="ageControls"></div>
+          <div class="field mobile-button-select">
+            <select id="ageMobile" data-field="age" aria-label="Age"></select>
+          </div>
         </div>
 
         <div class="factor-group">
@@ -114,6 +120,9 @@
               <small>Last 10 years</small>
             </div>
             <div class="work-grid" id="canadianWorkControls"></div>
+            <div class="field mobile-button-select">
+              <select id="canadianWorkMobile" data-field="canadianWork" aria-label="Canadian skilled work"></select>
+            </div>
           </div>
           <div class="language-panel">
             <div class="factor-label">
@@ -121,6 +130,9 @@
               <small>Total years</small>
             </div>
             <div class="work-grid" id="foreignWorkControls"></div>
+            <div class="field mobile-button-select">
+              <select id="foreignWorkMobile" data-field="foreignWork" aria-label="Foreign skilled work"></select>
+            </div>
           </div>
         </div>
 
@@ -183,6 +195,9 @@
               <small>Last 10 years</small>
             </div>
             <div class="work-grid" id="spouseCanadianWorkControls"></div>
+            <div class="field mobile-button-select">
+              <select id="spouseCanadianWorkMobile" data-field="spouseCanadianWork" aria-label="Spouse Canadian work"></select>
+            </div>
           </div>
         </div>
       </div>
@@ -263,6 +278,13 @@
       <p>Copyright 2026 Minju Park. All rights reserved.</p>
     </footer>
   </main>
+
+  <aside class="mobile-score-chip" aria-label="Total CRS score">
+    <span class="mobile-score-chip-label">Total CRS</span>
+    <strong class="score-roller mobile-score-value" id="mobileStickyScore" aria-live="polite" aria-label="0">
+      <span class="score-static-digit" aria-hidden="true">0</span>
+    </strong>
+  </aside>
 
   <script src="app.js" defer></script>
 </body>

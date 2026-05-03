@@ -239,6 +239,7 @@
   const THEME_STORAGE_KEY = "canada-crs-dashboard:theme";
   const DASHBOARD_VIEW = "dashboard";
   const POLYGON_VIEW = "polygon";
+  const MOBILE_POLYGON_QUERY = "(max-width: 900px)";
   const THEME_MODES = ["system", "light", "dark"];
   const POLYGON_WIDTH = 760;
   const POLYGON_HEIGHT = 540;
@@ -247,12 +248,17 @@
   const POLYGON_RADIUS = 160;
 
   const SELECT_CONFIG = {
+    maritalStatus: MARITAL_OPTIONS,
+    age: AGE_OPTIONS,
     education: EDUCATION_OPTIONS,
     firstTest: FIRST_LANGUAGE_TEST_OPTIONS,
     secondTest: null,
+    canadianWork: CANADIAN_WORK_OPTIONS,
+    foreignWork: FOREIGN_WORK_OPTIONS,
     canadianEducation: CANADIAN_EDUCATION_OPTIONS,
     spouseEducation: SPOUSE_EDUCATION_OPTIONS,
-    spouseTest: OPTIONAL_LANGUAGE_TEST_OPTIONS
+    spouseTest: OPTIONAL_LANGUAGE_TEST_OPTIONS,
+    spouseCanadianWork: CANADIAN_WORK_OPTIONS
   };
 
   // ----- Pure score computation -----
@@ -1074,25 +1080,50 @@
     return value === POLYGON_VIEW ? POLYGON_VIEW : DASHBOARD_VIEW;
   }
 
-  function viewFromUrl() {
-    if (typeof window === "undefined") return DASHBOARD_VIEW;
-    return normalizeViewMode(new URL(window.location.href).searchParams.get("view"));
+  function polygonAvailableForViewport() {
+    return (
+      typeof window === "undefined" ||
+      typeof window.matchMedia !== "function" ||
+      !window.matchMedia(MOBILE_POLYGON_QUERY).matches
+    );
   }
 
-  function updateUrlForView(view) {
-    if (typeof window === "undefined" || !window.history) return;
-    const nextView = normalizeViewMode(view);
+  function effectiveViewMode(value) {
+    const view = normalizeViewMode(value);
+    return view === POLYGON_VIEW && !polygonAvailableForViewport() ? DASHBOARD_VIEW : view;
+  }
+
+  function viewFromUrl() {
+    if (typeof window === "undefined") return DASHBOARD_VIEW;
+    return effectiveViewMode(new URL(window.location.href).searchParams.get("view"));
+  }
+
+  function viewUrlState(view) {
+    const nextView = effectiveViewMode(view);
     const url = new URL(window.location.href);
     if (nextView === POLYGON_VIEW) {
       url.searchParams.set("view", POLYGON_VIEW);
     } else {
       url.searchParams.delete("view");
     }
+    return { nextView, url };
+  }
+
+  function updateUrlForView(view) {
+    if (typeof window === "undefined" || !window.history) return;
+    const { nextView, url } = viewUrlState(view);
     window.history.pushState({ view: nextView }, "", url);
+  }
+
+  function replaceUrlForView(view) {
+    if (typeof window === "undefined" || !window.history) return;
+    const { nextView, url } = viewUrlState(view);
+    window.history.replaceState({ view: nextView }, "", url);
   }
 
   function syncViewMode(result) {
     const view = viewFromUrl();
+    const polygonAvailable = polygonAvailableForViewport();
     const scoreView = document.getElementById("scoreView");
     const polygonView = document.getElementById("polygonView");
     const viewToggle = document.getElementById("viewToggle");
@@ -1100,9 +1131,13 @@
     document.body.dataset.view = view;
     scoreView.hidden = view !== DASHBOARD_VIEW;
     polygonView.hidden = view !== POLYGON_VIEW;
+    viewToggle.hidden = !polygonAvailable;
     viewToggle.textContent = view === POLYGON_VIEW ? "Dashboard view" : "Polygon view";
     viewToggle.setAttribute("aria-pressed", String(view === POLYGON_VIEW));
     viewToggle.setAttribute("aria-label", view === POLYGON_VIEW ? "Show dashboard view" : "Show polygon view");
+    if (!polygonAvailable && new URL(window.location.href).searchParams.get("view") === POLYGON_VIEW) {
+      replaceUrlForView(DASHBOARD_VIEW);
+    }
 
     renderPolygon(result);
     syncPolygonControls();
@@ -1118,6 +1153,7 @@
     const result = scoreProfile(state);
 
     renderRollingNumber(document.getElementById("totalScore"), result.total);
+    renderRollingNumber(document.getElementById("mobileStickyScore"), result.total);
 
     renderBreakdown(result);
     renderDetails(result, lastRenderedResult);
@@ -1660,6 +1696,17 @@
   function boot() {
     setupControls();
     bindEvents();
+    const mobilePolygonMedia = typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia(MOBILE_POLYGON_QUERY)
+      : null;
+    if (mobilePolygonMedia) {
+      const onViewportChange = () => render();
+      if (mobilePolygonMedia.addEventListener) {
+        mobilePolygonMedia.addEventListener("change", onViewportChange);
+      } else if (mobilePolygonMedia.addListener) {
+        mobilePolygonMedia.addListener(onViewportChange);
+      }
+    }
     render();
   }
 

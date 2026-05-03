@@ -187,6 +187,14 @@ h1 {
   letter-spacing: 0;
 }
 
+h1 span {
+  display: inline;
+}
+
+h1 span + span::before {
+  content: " ";
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
@@ -226,6 +234,10 @@ h1 {
 
 .theme-toggle[data-theme-mode="dark"] {
   font-size: 22px;
+}
+
+.mobile-score-chip {
+  display: none;
 }
 
 .theme-toggle:hover,
@@ -364,6 +376,10 @@ body[data-view="polygon"] .score-rail {
   grid-template-columns: repeat(8, 54px);
   justify-content: start;
   gap: 7px;
+}
+
+.mobile-button-select {
+  display: none;
 }
 
 .segmented button,
@@ -1187,4 +1203,224 @@ select:focus {
   width: 14px;
   height: 14px;
   accent-color: var(--blue);
+}
+
+@media (max-width: 900px) {
+  body {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .page {
+    width: 100%;
+    padding: 18px 14px 92px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  h1 span {
+    display: block;
+  }
+
+  h1 span + span::before {
+    content: "";
+  }
+
+  .view-toggle {
+    display: none;
+  }
+
+  .dashboard,
+  body[data-view="polygon"] .dashboard {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  body[data-view="polygon"] .controls {
+    display: block;
+  }
+
+  .score-rail,
+  body[data-view="polygon"] .score-rail {
+    position: static;
+    top: auto;
+  }
+
+  .controls,
+  .score-rail {
+    padding: 14px;
+  }
+
+  .factor-label {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 5px 12px;
+  }
+
+  .factor-label small {
+    white-space: normal;
+  }
+
+  .segmented,
+  .age-grid,
+  .work-grid {
+    display: none;
+  }
+
+  .mobile-button-select {
+    display: block;
+  }
+
+  .select-grid,
+  .switch-grid,
+  .score-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .ability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .breakdown {
+    grid-template-columns: 1fr;
+    row-gap: 12px;
+  }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    column-gap: 10px;
+    row-gap: 6px;
+    align-items: center;
+  }
+
+  .bar-track {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .bar-value {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .score-number {
+    width: 100%;
+    min-width: 0;
+    min-height: 138px;
+  }
+
+  .score-value {
+    font-size: clamp(56px, 16vw, 76px);
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .detail {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    column-gap: 10px;
+    min-height: 58px;
+    padding: 9px 10px;
+  }
+
+  .detail span {
+    margin-top: 0;
+  }
+
+  .scenario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .polygon-view {
+    display: none !important;
+  }
+
+  .mobile-score-chip {
+    position: fixed;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 30;
+    display: grid;
+    grid-template-columns: max-content;
+    justify-items: start;
+    gap: 2px;
+    width: max-content;
+    border: 1px solid rgba(79, 140, 255, 0.48);
+    border-radius: 8px;
+    padding: 8px 10px 9px;
+    background: var(--score-number-bg);
+    box-shadow: var(--active-shadow);
+  }
+
+  .mobile-score-chip-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .mobile-score-value {
+    justify-content: flex-start;
+    color: var(--white-soft);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-inline: 10px;
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .controls,
+  .score-rail {
+    padding: 12px;
+  }
+
+  .language-panel {
+    padding: 10px;
+  }
+
+  .scenario-head {
+    grid-template-columns: 1fr;
+  }
+
+  .scenario-metrics {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .page {
+    padding-inline: 8px;
+  }
+
+  select {
+    padding-right: 38px;
+    background-position:
+      calc(100% - 18px) 50%,
+      calc(100% - 12px) 50%;
+  }
 }

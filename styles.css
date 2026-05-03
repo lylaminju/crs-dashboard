@@ -369,7 +369,7 @@ body[data-view="polygon"] .score-rail {
 
 .factor-title {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
 }
 
@@ -378,13 +378,13 @@ body[data-view="polygon"] .score-rail {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
   color: var(--quiet);
-  font-size: 14px;
-  font-weight: 800;
   line-height: 1;
   text-decoration: none;
+  transform: translateY(1px);
 }
 
 .factor-source-link:hover,
@@ -393,30 +393,30 @@ body[data-view="polygon"] .score-rail {
 }
 
 .factor-source-link:focus-visible {
-  border-radius: 999px;
+  border-radius: 3px;
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--blue-bright) 36%, transparent);
   outline: none;
 }
 
 .factor-source-link::after {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 7px);
   left: 50%;
   z-index: 20;
-  padding: 6px 8px;
+  padding: 5px 7px;
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--panel-3);
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
   color: var(--text);
-  content: attr(data-tooltip);
+  content: attr(data-source-tooltip);
   font-size: 11px;
   font-weight: 720;
   line-height: 1.1;
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, 4px);
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition: opacity 140ms ease, transform 140ms ease;
   white-space: nowrap;
 }
 
@@ -424,6 +424,20 @@ body[data-view="polygon"] .score-rail {
 .factor-source-link:focus-visible::after {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+.source-link-icon {
+  display: block;
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  background: url("assets/link-outline.svg") center / contain no-repeat;
+  transition: background-image 160ms ease;
+}
+
+.factor-source-link:hover .source-link-icon,
+.factor-source-link:focus-visible .source-link-icon {
+  background-image: url("assets/link-outline-blue.svg");
 }
 
 .factor-label small {

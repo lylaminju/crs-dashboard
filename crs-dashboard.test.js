@@ -158,6 +158,7 @@ const certificateStart = fixtureState({
   canadianEducation: "none"
 });
 const certificateScenario = scenarioById(certificateStart, "certificate-qualification");
+expectEqual("certificateOpportunity.title", certificateScenario.title, "🛠️ Add certificate of qualification");
 expectEqual("certificateOpportunity.delta", certificateScenario.delta, 50);
 expectEqual("certificateOpportunity.transfer", componentDeltaByLabel(certificateScenario, "Skill transferability: certificate"), 50);
 

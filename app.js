@@ -809,7 +809,7 @@
     ];
     const certificateOpportunities = state.certificate ? [] : [{
       id: "certificate-qualification",
-      title: "Add certificate of qualification",
+      title: "🛠️ Add certificate of qualification",
       mutate(next) {
         next.certificate = true;
       }

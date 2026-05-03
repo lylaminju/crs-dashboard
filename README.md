@@ -11,6 +11,7 @@ Features:
 - Compare score opportunities.
 - Switch to a polygon view of major factor groups.
 - Open related official Canada.ca source links from factor titles.
+- Keep selected CRS factors in local browser storage for the next visit.
 
 Efficiency features:
 

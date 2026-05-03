@@ -555,18 +555,32 @@
     const firstIsFrench = getLanguageTest(state, "first").language === "french";
     const secondIsFrench = getLanguageTest(state, "second").language === "french";
     if (firstIsFrench) {
-      setLanguageGroupToClb(state, "first", state.firstTest, targetClb);
+      raiseLanguageGroupToClb(state, "first", targetClb);
     } else if (secondIsFrench) {
-      setLanguageGroupToClb(state, "second", state.secondTest, targetClb);
+      raiseLanguageGroupToClb(state, "second", targetClb);
     } else {
       setLanguageGroupToClb(state, "second", "tef", targetClb);
     }
   }
 
-  function hasEnglishAllAtLeast(state, targetClb) {
-    return ["first", "second"].some((prefix) => {
-      return getLanguageTest(state, prefix).language === "english" && allLanguageClbAtLeast(state, prefix, targetClb);
-    });
+  function languagePrefix(state, language) {
+    return ["first", "second"].find((prefix) => getLanguageTest(state, prefix).language === language);
+  }
+
+  function hasLanguageAllAtLeast(state, language, targetClb) {
+    const prefix = languagePrefix(state, language);
+    return Boolean(prefix && allLanguageClbAtLeast(state, prefix, targetClb));
+  }
+
+  function raiseEnglishToClb(state, targetClb) {
+    const englishPrefix = languagePrefix(state, "english");
+    if (englishPrefix) {
+      raiseLanguageGroupToClb(state, englishPrefix, targetClb);
+      return;
+    }
+
+    const fallbackPrefix = getLanguageTest(state, "first").language === "french" ? "second" : "first";
+    setLanguageGroupToClb(state, fallbackPrefix, "celpip", targetClb);
   }
 
   function firstLanguageOpportunityTargets(state) {
@@ -605,6 +619,85 @@
     }));
   }
 
+  function englishForFrenchAdditionalDefinitions(state) {
+    if (!hasLanguageAllAtLeast(state, "french", 7) || hasLanguageAllAtLeast(state, "english", 5)) {
+      return [];
+    }
+
+    return [{
+      id: "english-clb-five-french-additional",
+      title: "🇬🇧 Raise English to CLB 5+ with French NCLC 7+",
+      mutate(next) {
+        raiseEnglishToClb(next, 5);
+      }
+    }];
+  }
+
+  function defaultTestKeyForLanguage(language) {
+    return language === "french" ? "tef" : "celpip";
+  }
+
+  function languageName(language) {
+    if (language === "french") return "French";
+    if (language === "english") return "English";
+    return "language";
+  }
+
+  function benchmarkAcronymForLanguage(language) {
+    return language === "french" ? "NCLC" : "CLB";
+  }
+
+  function setSecondLanguageScenario(state, targetClb) {
+    const targetLanguage = getLanguageTest(state, "first").language === "french" ? "english" : "french";
+    if (getLanguageTest(state, "second").language === targetLanguage) {
+      raiseLanguageGroupToClb(state, "second", targetClb);
+    } else {
+      setLanguageGroupToClb(state, "second", defaultTestKeyForLanguage(targetLanguage), targetClb);
+    }
+  }
+
+  function secondLanguageOpportunityDefinitions(state, englishForFrenchAdditional) {
+    const targetLanguage = getLanguageTest(state, "first").language === "french" ? "english" : "french";
+    const secondTest = getLanguageTest(state, "second");
+    const secondLanguageMatches = secondTest.language === targetLanguage;
+    const duplicateTargets = new Set();
+
+    if (targetLanguage === "french") {
+      duplicateTargets.add(7);
+      duplicateTargets.add(9);
+    }
+    if (targetLanguage === "english" && englishForFrenchAdditional.length) {
+      duplicateTargets.add(5);
+    }
+
+    return [5, 7, 9]
+      .filter((targetClb) => !duplicateTargets.has(targetClb))
+      .filter((targetClb) => !secondLanguageMatches || languageClbList(state, "second").some((clb) => clb < targetClb))
+      .map((targetClb) => ({
+        id: `second-language-clb-${targetClb}`,
+        title: `${targetLanguage === "french" ? "🇫🇷" : "🇬🇧"} Raise second ${languageName(targetLanguage)} to ${benchmarkAcronymForLanguage(targetLanguage)} ${targetClb}+`,
+        mutate(next) {
+          setSecondLanguageScenario(next, targetClb);
+        }
+      }));
+  }
+
+  function frenchOpportunityDefinitions(state) {
+    if (getLanguageTest(state, "first").language === "french") {
+      return [];
+    }
+
+    return [7, 9]
+      .filter((targetClb) => !hasLanguageAllAtLeast(state, "french", targetClb))
+      .map((targetClb) => ({
+        id: `french-nclc-${targetClb === 7 ? "seven" : "nine"}`,
+        title: `🇫🇷 Reach French NCLC ${targetClb} in all four abilities`,
+        mutate(next) {
+          setFrenchScenario(next, targetClb);
+        }
+      }));
+  }
+
   const EDUCATION_RANK = {
     lessSecondary: 0,
     secondary: 1,
@@ -616,10 +709,31 @@
     phd: 7
   };
 
+  function educationRankValue(value) {
+    return EDUCATION_RANK[value] ?? 0;
+  }
+
   function setEducationAtLeast(state, target) {
-    if (EDUCATION_RANK[state.education] < EDUCATION_RANK[target]) {
+    if (educationRankValue(state.education) < educationRankValue(target)) {
       state.education = target;
     }
+  }
+
+  function addCanadianOneTwoCredential(state) {
+    const currentRank = educationRankValue(state.education);
+    setEducationAtLeast(state, currentRank >= educationRankValue("bachelor") ? "twoOrMore" : "twoYear");
+    if (state.canadianEducation === "none") state.canadianEducation = "oneTwo";
+  }
+
+  function addCanadianThreePlusCredential(state) {
+    const currentRank = educationRankValue(state.education);
+    setEducationAtLeast(state, currentRank >= educationRankValue("oneYear") ? "twoOrMore" : "bachelor");
+    state.canadianEducation = "threePlus";
+  }
+
+  function canAddAnotherNonCanadianCredential(state) {
+    const currentRank = educationRankValue(state.education);
+    return currentRank >= educationRankValue("oneYear") && currentRank < educationRankValue("twoOrMore");
   }
 
   function ageNumber(ageKey) {
@@ -652,7 +766,29 @@
 
   function scenarioDefinitions(state) {
     const firstLanguageOpportunities = firstLanguageOpportunityDefinitions(state);
+    const englishForFrenchAdditional = englishForFrenchAdditionalDefinitions(state);
+    const secondLanguageOpportunities = secondLanguageOpportunityDefinitions(state, englishForFrenchAdditional);
+    const frenchOpportunities = frenchOpportunityDefinitions(state);
+    const currentCanadianWork = numeric(state.canadianWork);
     const currentForeignWork = numeric(state.foreignWork);
+    const canadianWorkOpportunities = [
+      ...(currentCanadianWork < 5 ? [{
+        id: "canadian-work-year",
+        title: `🍁 Add Canadian skilled work: ${CANADIAN_WORK_BY_VALUE[incrementCanadianWork(state.canadianWork)].label}`,
+        mutate(next) {
+          advanceAge(next, numeric(incrementCanadianWork(next.canadianWork)) - numeric(next.canadianWork));
+          next.canadianWork = incrementCanadianWork(next.canadianWork);
+        }
+      }] : []),
+      ...(currentCanadianWork === 0 ? [{
+        id: "canadian-work-two-years",
+        title: "🍁 Reach 2 years Canadian skilled work",
+        mutate(next) {
+          advanceAge(next, yearsToCanadianWorkTarget(next, 2));
+          next.canadianWork = "2";
+        }
+      }] : [])
+    ];
     const foreignWorkOpportunities = [
       ...(currentForeignWork === 0 ? [{
         id: "foreign-work-year",
@@ -671,46 +807,26 @@
         }
       }] : [])
     ];
+    const certificateOpportunities = state.certificate ? [] : [{
+      id: "certificate-qualification",
+      title: "Add certificate of qualification",
+      mutate(next) {
+        next.certificate = true;
+      }
+    }];
     return [
-      {
-        id: "canadian-work-year",
-        title: `🍁 Add Canadian skilled work: ${CANADIAN_WORK_BY_VALUE[incrementCanadianWork(state.canadianWork)].label}`,
-        mutate(next) {
-          advanceAge(next, numeric(incrementCanadianWork(next.canadianWork)) - numeric(next.canadianWork));
-          next.canadianWork = incrementCanadianWork(next.canadianWork);
-        }
-      },
-      {
-        id: "canadian-work-two-years",
-        title: "🍁 Reach 2 years Canadian skilled work",
-        mutate(next) {
-          advanceAge(next, yearsToCanadianWorkTarget(next, 2));
-          if (numeric(next.canadianWork) < 2) next.canadianWork = "2";
-        }
-      },
+      ...canadianWorkOpportunities,
       ...foreignWorkOpportunities,
       ...firstLanguageOpportunities,
-      {
-        id: "french-nclc-seven",
-        title: "🇫🇷 Reach French NCLC 7 in all four abilities",
-        mutate(next) {
-          setFrenchScenario(next, 7);
-        }
-      },
-      {
-        id: "french-nclc-nine",
-        title: "🇫🇷 Reach French NCLC 9 in all four abilities",
-        mutate(next) {
-          setFrenchScenario(next, 9);
-        }
-      },
+      ...englishForFrenchAdditional,
+      ...secondLanguageOpportunities,
+      ...frenchOpportunities,
       {
         id: "canadian-education-one-two",
         title: "🎓 Complete Canadian 1-2 year credential",
         mutate(next) {
           advanceAge(next, 2);
-          setEducationAtLeast(next, "twoOrMore");
-          if (next.canadianEducation === "none") next.canadianEducation = "oneTwo";
+          addCanadianOneTwoCredential(next);
         }
       },
       {
@@ -718,8 +834,7 @@
         title: "🎓 Complete Canadian 3+ year credential",
         mutate(next) {
           advanceAge(next, 3);
-          setEducationAtLeast(next, "twoOrMore");
-          next.canadianEducation = "threePlus";
+          addCanadianThreePlusCredential(next);
         }
       },
       {
@@ -731,14 +846,14 @@
           next.canadianEducation = "threePlus";
         }
       },
-      {
+      ...(canAddAnotherNonCanadianCredential(state) ? [{
         id: "eca-two-or-more",
         title: "🎓 Add another non-Canadian credential",
         mutate(next) {
           advanceAge(next, 1);
           setEducationAtLeast(next, "twoOrMore");
         }
-      },
+      }] : []),
       {
         id: "eca-masters",
         title: "🎓 Complete non-Canadian master's credential",
@@ -746,7 +861,8 @@
           advanceAge(next, 2);
           setEducationAtLeast(next, "masters");
         }
-      }
+      },
+      ...certificateOpportunities
     ];
   }
 

@@ -138,6 +138,23 @@ expectEqual("transferabilityCanadianWorkEdge.delta", transferScenario.delta, 48)
 expectEqual("transferabilityCanadianWorkEdge.canadianWork", componentDeltaByLabel(transferScenario, "Canadian work"), 35);
 expectEqual("transferabilityCanadianWorkEdge.educationTransfer", componentDeltaByLabel(transferScenario, "Skill transferability: education"), 13);
 
+const certificateStart = fixtureState({
+  maritalStatus: "single",
+  age: "30",
+  education: "bachelor",
+  ...languageFixture("first", "celpip", "E"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "0",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+const certificateScenario = scenarioById(certificateStart, "certificate-qualification");
+expectEqual("certificateOpportunity.delta", certificateScenario.delta, 50);
+expectEqual("certificateOpportunity.transfer", componentDeltaByLabel(certificateScenario, "Skill transferability: certificate"), 50);
+
 const frenchStart = fixtureState({
   maritalStatus: "spouse-accompanying",
   age: "30",
@@ -168,6 +185,35 @@ expectEqual("frenchNclcSeven.additional", componentDeltaByLabel(frenchSeven, "Ad
 expectEqual("frenchNclcNine.delta", frenchNine.delta, 72);
 expectEqual("frenchNclcNine.secondLanguage", componentDeltaByLabel(frenchNine, "Second official language"), 22);
 expectEqual("frenchNclcNine.additional", componentDeltaByLabel(frenchNine, "Additional"), 50);
+const secondFrenchClbFive = scenarioById(frenchStart, "second-language-clb-5");
+expectEqual("secondLanguageOpportunity.frenchClbFive.delta", secondFrenchClbFive.delta, 4);
+expectEqual("secondLanguageOpportunity.frenchClbFive.secondLanguage", componentDeltaByLabel(secondFrenchClbFive, "Second official language"), 4);
+
+const frenchFirstNoEnglishStart = fixtureState({
+  maritalStatus: "single",
+  age: "30",
+  education: "bachelor",
+  ...languageFixture("first", "tef", "E"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "0",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+const englishFrenchAdditional = scenarioById(frenchFirstNoEnglishStart, "english-clb-five-french-additional");
+expectEqual("englishFrenchAdditional.delta", englishFrenchAdditional.delta, 29);
+expectEqual("englishFrenchAdditional.secondLanguage", componentDeltaByLabel(englishFrenchAdditional, "Second official language"), 4);
+expectEqual("englishFrenchAdditional.additional", componentDeltaByLabel(englishFrenchAdditional, "Additional"), 25);
+expect(
+  scenarioDefinitions(frenchFirstNoEnglishStart).every((scenario) => !scenario.id.startsWith("french-nclc")),
+  "frenchOpportunity.noDuplicateWhenFrenchIsFirst"
+);
+expect(
+  scenarioDefinitions(frenchFirstNoEnglishStart).some((scenario) => scenario.id === "second-language-clb-7"),
+  "secondLanguageOpportunity.englishClbSevenRemains"
+);
 
 const firstLanguageClbSixStart = fixtureState({
   maritalStatus: "spouse-accompanying",
@@ -250,6 +296,15 @@ expect(
 expect(
   scenarioDefinitions(foreignWorkTwoYearsStart).some((scenario) => scenario.id === "foreign-work-three-years"),
   "foreignWorkOpportunity.threeYearTargetRemains"
+);
+const canadianWorkOneYearStart = { ...foreignWorkStart, canadianWork: "1" };
+expect(
+  scenarioDefinitions(canadianWorkOneYearStart).every((scenario) => scenario.id !== "canadian-work-two-years"),
+  "canadianWorkOpportunity.noDuplicateAtTwoYearTier"
+);
+expect(
+  scenarioDefinitions(canadianWorkOneYearStart).some((scenario) => scenario.id === "canadian-work-year"),
+  "canadianWorkOpportunity.incrementRemains"
 );
 
 const firstLanguageFrenchStart = {
@@ -353,6 +408,32 @@ expectEqual("agePenalty.canadianMasters.age", componentDeltaByLabel(canadianMast
 const ecaMastersAt30 = scenarioById(agePenaltyAt30, "eca-masters");
 expectEqual("agePenalty.ecaMasters.delta", ecaMastersAt30.delta, 29);
 expectEqual("agePenalty.ecaMasters.age", componentDeltaByLabel(ecaMastersAt30, "Age"), -10);
+
+const lowerEducationStart = fixtureState({
+  maritalStatus: "single",
+  age: "25",
+  education: "secondary",
+  ...languageFixture("first", "celpip", "G"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "0",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+expectEqual("educationOpportunity.canadianOneTwoFromSecondary", scenarioById(lowerEducationStart, "canadian-education-one-two").nextState.education, "twoYear");
+expectEqual("educationOpportunity.canadianThreePlusFromSecondary", scenarioById(lowerEducationStart, "canadian-education-three-plus").nextState.education, "bachelor");
+expect(
+  scenarioDefinitions(lowerEducationStart).every((scenario) => scenario.id !== "eca-two-or-more"),
+  "educationOpportunity.noAnotherCredentialFromSecondary"
+);
+const oneYearEducationStart = { ...lowerEducationStart, education: "oneYear" };
+expectEqual("educationOpportunity.canadianThreePlusFromOneYear", scenarioById(oneYearEducationStart, "canadian-education-three-plus").nextState.education, "twoOrMore");
+expect(
+  scenarioDefinitions(oneYearEducationStart).some((scenario) => scenario.id === "eca-two-or-more"),
+  "educationOpportunity.anotherCredentialFromPostSecondary"
+);
 
 const sortedStrategyDeltas = scenarioDefinitions(strategyStart)
   .map((definition) => buildScenario(strategyStart, definition))

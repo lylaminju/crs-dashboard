@@ -27,7 +27,10 @@
 
         <div class="factor-group">
           <div class="factor-label">
-            <span>Marital status</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Marital status</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for marital status" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>Determines spouse path</small>
           </div>
           <div class="segmented" id="maritalControls"></div>
@@ -38,7 +41,10 @@
 
         <div class="factor-group">
           <div class="factor-label">
-            <span>Age</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Age</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for age" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>At invitation or profile date</small>
           </div>
           <div class="age-grid" id="ageControls"></div>
@@ -49,15 +55,21 @@
 
         <div class="factor-group">
           <div class="factor-label">
-            <label for="education">Education</label>
+            <span class="factor-title">
+              <span class="factor-title-text">Education</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for education" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>Highest assessed credential</small>
           </div>
-          <select id="education" data-field="education"></select>
+          <select id="education" data-field="education" aria-label="Education"></select>
         </div>
 
         <div class="factor-group">
           <div class="factor-label">
-            <span>Official languages</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Official languages</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for official languages" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>Test-specific scores</small>
           </div>
           <div class="language-panel">
@@ -112,12 +124,17 @@
 
         <div class="factor-group">
           <div class="factor-label">
-            <span>Work experience</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Work experience</span>
+            </span>
             <small>Skilled TEER 0, 1, 2 or 3</small>
           </div>
           <div class="language-panel">
             <div class="factor-label">
-              <span>Canadian skilled work</span>
+              <span class="factor-title">
+                <span class="factor-title-text">Canadian skilled work</span>
+                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for Canadian skilled work" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+              </span>
               <small>Last 10 years</small>
             </div>
             <div class="work-grid" id="canadianWorkControls"></div>
@@ -127,7 +144,10 @@
           </div>
           <div class="language-panel">
             <div class="factor-label">
-              <span>Foreign skilled work</span>
+              <span class="factor-title">
+                <span class="factor-title-text">Foreign skilled work</span>
+                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#skill" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for foreign skilled work" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+              </span>
               <small>Total years</small>
             </div>
             <div class="work-grid" id="foreignWorkControls"></div>
@@ -139,7 +159,10 @@
 
         <div class="factor-group">
           <div class="factor-label">
-            <span>Additional factors</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Additional factors</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#extra" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for additional factors" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>Maximum 600 additional points</small>
           </div>
           <div class="select-grid">
@@ -157,7 +180,10 @@
 
         <div class="factor-group spouse-block" id="spouseBlock">
           <div class="factor-label">
-            <span>Spouse or partner factors</span>
+            <span class="factor-title">
+              <span class="factor-title-text">Spouse or partner factors</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#spouse" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for spouse or partner factors" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+            </span>
             <small>Only when accompanying</small>
           </div>
           <div class="select-grid">
@@ -192,7 +218,10 @@
           </div>
           <div class="language-panel">
             <div class="factor-label">
-              <span>Spouse Canadian work</span>
+              <span class="factor-title">
+                <span class="factor-title-text">Spouse Canadian work</span>
+                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#spouse" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria for spouse Canadian work" data-tooltip="Official Canada.ca CRS criteria">ⓘ</a>
+              </span>
               <small>Last 10 years</small>
             </div>
             <div class="work-grid" id="spouseCanadianWorkControls"></div>

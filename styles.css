@@ -361,10 +361,69 @@ body[data-view="polygon"] .score-rail {
 }
 
 .factor-label label,
-.factor-label span {
+.factor-title {
   color: var(--text);
   font-size: 14px;
   font-weight: 760;
+}
+
+.factor-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.factor-source-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--quiet);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.factor-source-link:hover,
+.factor-source-link:focus-visible {
+  color: var(--blue-bright);
+}
+
+.factor-source-link:focus-visible {
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--blue-bright) 36%, transparent);
+  outline: none;
+}
+
+.factor-source-link::after {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 20;
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--panel-3);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  content: attr(data-tooltip);
+  font-size: 11px;
+  font-weight: 720;
+  line-height: 1.1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  white-space: nowrap;
+}
+
+.factor-source-link:hover::after,
+.factor-source-link:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .factor-label small {

@@ -203,6 +203,7 @@
   const EDUCATION_BY_VALUE = optionLookup(EDUCATION_OPTIONS);
   const SPOUSE_EDUCATION_BY_VALUE = optionLookup(SPOUSE_EDUCATION_OPTIONS);
   const CANADIAN_WORK_BY_VALUE = optionLookup(CANADIAN_WORK_OPTIONS);
+  const FOREIGN_WORK_BY_VALUE = optionLookup(FOREIGN_WORK_OPTIONS);
   const CANADIAN_EDUCATION_BY_VALUE = optionLookup(CANADIAN_EDUCATION_OPTIONS);
 
   // ----- Default state and form option metadata -----
@@ -520,6 +521,11 @@
     return String(next);
   }
 
+  function incrementForeignWork(value) {
+    const next = Math.min(numeric(value) + 1, 3);
+    return String(next);
+  }
+
   function scoreValueForClbAtLeast(testKey, targetClb) {
     const test = LANGUAGE_TESTS[testKey] || LANGUAGE_TESTS.none;
     const exact = test.scores.find((score) => score.clb === targetClb);
@@ -589,9 +595,10 @@
   }
 
   function firstLanguageOpportunityDefinitions(state) {
+    const titlePrefix = firstLanguageName(state) === "French" ? "🇫🇷 " : "🇬🇧 ";
     return firstLanguageOpportunityTargets(state).map((targetClb) => ({
       id: `first-language-clb-${targetClb}`,
-      title: `Raise ${firstLanguageName(state)} to ${languageBenchmarkLabel(state, "first", targetClb)} in all four abilities`,
+      title: `${titlePrefix}Raise ${firstLanguageName(state)} to ${languageBenchmarkLabel(state, "first", targetClb)} in all four abilities`,
       mutate(next) {
         raiseLanguageGroupToClb(next, "first", targetClb);
       }
@@ -639,12 +646,35 @@
     return Math.max(targetYears - numeric(state.canadianWork), 0);
   }
 
+  function yearsToForeignWorkTarget(state, targetYears) {
+    return Math.max(targetYears - numeric(state.foreignWork), 0);
+  }
+
   function scenarioDefinitions(state) {
     const firstLanguageOpportunities = firstLanguageOpportunityDefinitions(state);
+    const currentForeignWork = numeric(state.foreignWork);
+    const foreignWorkOpportunities = [
+      ...(currentForeignWork === 0 ? [{
+        id: "foreign-work-year",
+        title: `🌎 Add foreign skilled work: ${FOREIGN_WORK_BY_VALUE[incrementForeignWork(state.foreignWork)].label}`,
+        mutate(next) {
+          advanceAge(next, numeric(incrementForeignWork(next.foreignWork)) - numeric(next.foreignWork));
+          next.foreignWork = incrementForeignWork(next.foreignWork);
+        }
+      }] : []),
+      ...(currentForeignWork < 3 ? [{
+        id: "foreign-work-three-years",
+        title: "🌎 Reach 3+ years foreign skilled work",
+        mutate(next) {
+          advanceAge(next, yearsToForeignWorkTarget(next, 3));
+          if (numeric(next.foreignWork) < 3) next.foreignWork = "3";
+        }
+      }] : [])
+    ];
     return [
       {
         id: "canadian-work-year",
-        title: `Add Canadian skilled work: ${CANADIAN_WORK_BY_VALUE[incrementCanadianWork(state.canadianWork)].label}`,
+        title: `🍁 Add Canadian skilled work: ${CANADIAN_WORK_BY_VALUE[incrementCanadianWork(state.canadianWork)].label}`,
         mutate(next) {
           advanceAge(next, numeric(incrementCanadianWork(next.canadianWork)) - numeric(next.canadianWork));
           next.canadianWork = incrementCanadianWork(next.canadianWork);
@@ -652,30 +682,31 @@
       },
       {
         id: "canadian-work-two-years",
-        title: "Reach 2 years Canadian skilled work",
+        title: "🍁 Reach 2 years Canadian skilled work",
         mutate(next) {
           advanceAge(next, yearsToCanadianWorkTarget(next, 2));
           if (numeric(next.canadianWork) < 2) next.canadianWork = "2";
         }
       },
+      ...foreignWorkOpportunities,
       ...firstLanguageOpportunities,
       {
         id: "french-nclc-seven",
-        title: "Reach French NCLC 7 in all four abilities",
+        title: "🇫🇷 Reach French NCLC 7 in all four abilities",
         mutate(next) {
           setFrenchScenario(next, 7);
         }
       },
       {
         id: "french-nclc-nine",
-        title: "Reach French NCLC 9 in all four abilities",
+        title: "🇫🇷 Reach French NCLC 9 in all four abilities",
         mutate(next) {
           setFrenchScenario(next, 9);
         }
       },
       {
         id: "canadian-education-one-two",
-        title: "Complete Canadian 1-2 year credential",
+        title: "🎓 Complete Canadian 1-2 year credential",
         mutate(next) {
           advanceAge(next, 2);
           setEducationAtLeast(next, "twoOrMore");
@@ -684,7 +715,7 @@
       },
       {
         id: "canadian-education-three-plus",
-        title: "Complete Canadian 3+ year credential",
+        title: "🎓 Complete Canadian 3+ year credential",
         mutate(next) {
           advanceAge(next, 3);
           setEducationAtLeast(next, "twoOrMore");
@@ -693,7 +724,7 @@
       },
       {
         id: "canadian-masters",
-        title: "Complete Canadian master's credential",
+        title: "🎓 Complete Canadian master's credential",
         mutate(next) {
           advanceAge(next, 2);
           setEducationAtLeast(next, "masters");
@@ -702,7 +733,7 @@
       },
       {
         id: "eca-two-or-more",
-        title: "Complete additional non-Canadian credential and ECA",
+        title: "🎓 Add another non-Canadian credential",
         mutate(next) {
           advanceAge(next, 1);
           setEducationAtLeast(next, "twoOrMore");
@@ -710,17 +741,10 @@
       },
       {
         id: "eca-masters",
-        title: "Complete non-Canadian master's credential and ECA",
+        title: "🎓 Complete non-Canadian master's credential",
         mutate(next) {
           advanceAge(next, 2);
           setEducationAtLeast(next, "masters");
-        }
-      },
-      {
-        id: "provincial-nomination",
-        title: "Add provincial nomination",
-        mutate(next) {
-          next.nomination = true;
         }
       }
     ];
@@ -758,7 +782,7 @@
         projected.details.transferGroups.foreignWork - current.details.transferGroups.foreignWork
       ],
       ["Skill transferability: certificate", projected.details.transfer.certificate - current.details.transfer.certificate],
-      ["Additional points", projected.breakdown.additional - current.breakdown.additional]
+      ["Additional", projected.breakdown.additional - current.breakdown.additional]
     ];
     return rows.filter(([, delta]) => delta !== 0);
   }
@@ -1284,7 +1308,7 @@
     document.getElementById("scenarios").innerHTML = scenarios.map((scenario) => `
       <article class="scenario">
         <div class="scenario-head">
-          <h3>${scenario.title}</h3>
+          <h3>${escapeHtml(scenario.title)}</h3>
           <div class="scenario-metrics" aria-label="Score change ${formatDelta(scenario.delta)}; projected total ${scenario.projected.total}">
             <div class="scenario-delta">${formatDelta(scenario.delta)}</div>
             <div class="scenario-projected">${scenario.projected.total}</div>

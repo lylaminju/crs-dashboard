@@ -816,6 +816,8 @@ select:focus {
 }
 
 .scenario {
+  display: grid;
+  grid-template-rows: auto 1fr;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 12px;
@@ -872,6 +874,7 @@ select:focus {
 .delta-list {
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 6px;
 }
 
@@ -1203,6 +1206,12 @@ select:focus {
   width: 14px;
   height: 14px;
   accent-color: var(--blue);
+}
+
+@media (min-width: 901px) {
+  .scenario {
+    min-height: 108px;
+  }
 }
 
 @media (max-width: 900px) {

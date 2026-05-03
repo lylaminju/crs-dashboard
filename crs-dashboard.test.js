@@ -164,10 +164,10 @@ const frenchNine = buildScenario(
 );
 expectEqual("frenchNclcSeven.delta", frenchSeven.delta, 62);
 expectEqual("frenchNclcSeven.secondLanguage", componentDeltaByLabel(frenchSeven, "Second official language"), 12);
-expectEqual("frenchNclcSeven.additional", componentDeltaByLabel(frenchSeven, "Additional points"), 50);
+expectEqual("frenchNclcSeven.additional", componentDeltaByLabel(frenchSeven, "Additional"), 50);
 expectEqual("frenchNclcNine.delta", frenchNine.delta, 72);
 expectEqual("frenchNclcNine.secondLanguage", componentDeltaByLabel(frenchNine, "Second official language"), 22);
-expectEqual("frenchNclcNine.additional", componentDeltaByLabel(frenchNine, "Additional points"), 50);
+expectEqual("frenchNclcNine.additional", componentDeltaByLabel(frenchNine, "Additional"), 50);
 
 const firstLanguageClbSixStart = fixtureState({
   maritalStatus: "spouse-accompanying",
@@ -191,7 +191,7 @@ expectEqual("firstLanguageOpportunity.clbSeven.directLanguage", componentDeltaBy
 expectEqual("firstLanguageOpportunity.clbSeven.educationTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: education"), 13);
 expectEqual("firstLanguageOpportunity.clbSeven.foreignTransfer", componentDeltaByLabel(firstLanguageClbSeven, "Skill transferability: foreign work"), 13);
 expect(
-  scenarioDefinitions(firstLanguageClbSixStart).some((scenario) => scenario.title === "Raise English to CLB 7+ in all four abilities"),
+  scenarioDefinitions(firstLanguageClbSixStart).some((scenario) => scenario.title === "🇬🇧 Raise English to CLB 7+ in all four abilities"),
   "firstLanguageOpportunity.englishUsesClbLabel"
 );
 expectEqual(
@@ -221,12 +221,43 @@ expectEqual("firstLanguageOpportunity.clbNine.delta", firstLanguageClbNine.delta
 expectEqual("firstLanguageOpportunity.clbNine.educationTransfer", componentDeltaByLabel(firstLanguageClbNine, "Skill transferability: education"), 12);
 expectEqual("firstLanguageOpportunity.clbNine.foreignTransfer", componentDeltaByLabel(firstLanguageClbNine, "Skill transferability: foreign work"), 25);
 
+const foreignWorkStart = fixtureState({
+  maritalStatus: "single",
+  age: "25",
+  education: "bachelor",
+  ...languageFixture("first", "celpip", "G"),
+  ...languageFixture("second", "none", "none"),
+  canadianWork: "0",
+  foreignWork: "0",
+  sibling: false,
+  nomination: false,
+  certificate: false,
+  canadianEducation: "none"
+});
+const foreignWorkOneYear = scenarioById(foreignWorkStart, "foreign-work-year");
+const foreignWorkThreeYears = scenarioById(foreignWorkStart, "foreign-work-three-years");
+expectEqual("foreignWorkOpportunity.oneYear.delta", foreignWorkOneYear.delta, 25);
+expectEqual("foreignWorkOpportunity.oneYear.transfer", componentDeltaByLabel(foreignWorkOneYear, "Skill transferability: foreign work"), 25);
+expectEqual("foreignWorkOpportunity.oneYear.title", foreignWorkOneYear.title, "🌎 Add foreign skilled work: 1 year");
+expectEqual("foreignWorkOpportunity.threeYears.delta", foreignWorkThreeYears.delta, 50);
+expectEqual("foreignWorkOpportunity.threeYears.transfer", componentDeltaByLabel(foreignWorkThreeYears, "Skill transferability: foreign work"), 50);
+expectEqual("foreignWorkOpportunity.threeYears.title", foreignWorkThreeYears.title, "🌎 Reach 3+ years foreign skilled work");
+const foreignWorkTwoYearsStart = { ...foreignWorkStart, foreignWork: "2" };
+expect(
+  scenarioDefinitions(foreignWorkTwoYearsStart).every((scenario) => scenario.id !== "foreign-work-year"),
+  "foreignWorkOpportunity.noDuplicateAtThreeYearTier"
+);
+expect(
+  scenarioDefinitions(foreignWorkTwoYearsStart).some((scenario) => scenario.id === "foreign-work-three-years"),
+  "foreignWorkOpportunity.threeYearTargetRemains"
+);
+
 const firstLanguageFrenchStart = {
   ...firstLanguageClbSixStart,
   ...languageFixture("first", "tef", "E")
 };
 expect(
-  scenarioDefinitions(firstLanguageFrenchStart).some((scenario) => scenario.title === "Raise French to NCLC 8+ in all four abilities"),
+  scenarioDefinitions(firstLanguageFrenchStart).some((scenario) => scenario.title === "🇫🇷 Raise French to NCLC 8+ in all four abilities"),
   "firstLanguageOpportunity.frenchUsesNclcLabel"
 );
 expectEqual(
@@ -286,18 +317,25 @@ const strategyStart = fixtureState({
   canadianEducation: "none"
 });
 expectEqual("strategy.canadianWork1", scenarioById(strategyStart, "canadian-work-year").delta, 48);
+expectEqual("strategy.canadianWork1TitleEmoji", scenarioById(strategyStart, "canadian-work-year").title, "🍁 Add Canadian skilled work: 1 year");
 expectEqual("strategy.canadianWork2", scenarioById(strategyStart, "canadian-work-two-years").delta, 71);
+expectEqual("strategy.canadianWork2TitleEmoji", scenarioById(strategyStart, "canadian-work-two-years").title, "🍁 Reach 2 years Canadian skilled work");
 expectEqual("strategy.frenchNclc7", scenarioById(strategyStart, "french-nclc-seven").delta, 62);
+expectEqual("strategy.frenchNclc7TitleEmoji", scenarioById(strategyStart, "french-nclc-seven").title, "🇫🇷 Reach French NCLC 7 in all four abilities");
 expectEqual("strategy.frenchNclc9", scenarioById(strategyStart, "french-nclc-nine").delta, 72);
 expectEqual("strategy.firstLanguageClb10", scenarioById(strategyStart, "first-language-clb-10").delta, 3);
 expectEqual("strategy.firstLanguageClb10DirectLanguage", componentDeltaByLabel(scenarioById(strategyStart, "first-language-clb-10"), "First official language"), 3);
 expectEqual("strategy.canadianEducationOneTwo", scenarioById(strategyStart, "canadian-education-one-two").delta, 47);
+expectEqual("strategy.canadianEducationOneTwoTitleEmoji", scenarioById(strategyStart, "canadian-education-one-two").title, "🎓 Complete Canadian 1-2 year credential");
 expectEqual("strategy.canadianEducationThreePlus", scenarioById(strategyStart, "canadian-education-three-plus").delta, 62);
 expectEqual("strategy.canadianMasters", scenarioById(strategyStart, "canadian-masters").delta, 69);
 expectEqual("strategy.ecaTwoOrMore", scenarioById(strategyStart, "eca-two-or-more").delta, 32);
 expectEqual("strategy.ecaMasters", scenarioById(strategyStart, "eca-masters").delta, 39);
-expectEqual("strategy.ecaMastersTitle", scenarioById(strategyStart, "eca-masters").title, "Complete non-Canadian master's credential and ECA");
-expectEqual("strategy.pnp", scenarioById(strategyStart, "provincial-nomination").delta, 600);
+expectEqual("strategy.ecaMastersTitle", scenarioById(strategyStart, "eca-masters").title, "🎓 Complete non-Canadian master's credential");
+expect(
+  scenarioDefinitions(strategyStart).every((scenario) => scenario.id !== "provincial-nomination"),
+  "strategy.pnpRemovedFromOpportunities"
+);
 expect(
   scenarioDefinitions({ ...strategyStart, firstWriting: "H" }).every((scenario) => !scenario.id.startsWith("first-language-clb")),
   "firstLanguageOpportunity.noCardAtClbTen"
@@ -321,7 +359,7 @@ const sortedStrategyDeltas = scenarioDefinitions(strategyStart)
   .filter((scenario) => scenario.delta > 0)
   .sort((a, b) => b.delta - a.delta)
   .map((scenario) => scenario.delta);
-expectEqual("scenarioSort.descendingFirst", sortedStrategyDeltas[0], 600);
+expectEqual("scenarioSort.descendingFirst", sortedStrategyDeltas[0], 72);
 expect(
   sortedStrategyDeltas.every((delta, index, list) => index === 0 || list[index - 1] >= delta),
   "scenarioSort.descendingOrder"
@@ -380,6 +418,7 @@ expect(script.includes("function renderMaritalControls()"), "productionUi.marita
 expect(script.includes("data-marital"), "productionUi.maritalDesktopButtonHandlers");
 expect(css.includes(".segmented"), "productionUi.segmentedButtonCss");
 expect(css.includes(".segmented,\n  .age-grid,\n  .work-grid {\n    display: none;"), "responsive.mobileHidesMaritalButtonGroup");
+expect(html.includes("Provincial or territorial nomination adds 600 CRS points"), "productionUi.pnpPathwayNote");
 expect(html.includes("Age decreases shown in future paths are planning estimates"), "productionUi.opportunityAgeNote");
 expect(html.includes('id="opportunityAgeNote" hidden'), "productionUi.opportunityAgeNoteHiddenByDefault");
 expect(script.includes('opportunityAgeNote.hidden = ageNumber(state.age) < 27'), "productionUi.opportunityAgeNoteShownAtTwentySeven");

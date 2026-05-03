@@ -955,6 +955,15 @@
     }
   }
 
+  function clearStoredState() {
+    if (!storageAvailable()) return;
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      // Storage can fail in private browsing or locked-down file contexts.
+    }
+  }
+
   function storageAvailable() {
     try {
       return typeof localStorage !== "undefined";
@@ -1138,6 +1147,13 @@
   }
 
   function bindEvents() {
+    document.getElementById("resetButton").addEventListener("click", () => {
+      state = cloneState(DEFAULT_STATE);
+      lastRenderedResult = null;
+      clearStoredState();
+      render();
+    });
+
     const viewToggle = document.getElementById("viewToggle");
     viewToggle.addEventListener("click", () => {
       const currentView = document.body.dataset.view === POLYGON_VIEW ? POLYGON_VIEW : DASHBOARD_VIEW;

@@ -201,6 +201,7 @@ h1 span + span::before {
   gap: 10px;
 }
 
+.reset-button,
 .theme-toggle,
 .view-toggle {
   min-height: 42px;
@@ -214,6 +215,12 @@ h1 span + span::before {
   letter-spacing: 0;
   white-space: nowrap;
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.reset-button {
+  border-color: var(--line);
+  color: var(--muted);
+  background: transparent;
 }
 
 .theme-toggle {
@@ -242,6 +249,8 @@ h1 span + span::before {
 
 .theme-toggle:hover,
 .theme-toggle:focus-visible,
+.reset-button:hover,
+.reset-button:focus-visible,
 .view-toggle:hover,
 .view-toggle:focus-visible {
   border-color: var(--blue-bright);

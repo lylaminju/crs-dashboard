@@ -574,6 +574,16 @@ expect(html.includes('data-language-group="second" data-hide-when-no-test hidden
 expect(css.includes(".ability-grid[hidden]"), "productionUi.hiddenAbilityGridCssFile");
 expect(html.includes('<div class="ability-grid" data-language-group="spouse">'), "productionUi.spouseLanguagePanelFormat");
 expect(!html.includes('<div class="field"></div>'), "productionUi.noEmptySpouseGridSpacer");
+const resetButtonIndex = html.indexOf('id="resetButton"');
+const viewToggleIndex = html.indexOf('id="viewToggle"');
+const themeToggleIndex = html.indexOf('id="themeToggle"');
+expect(resetButtonIndex !== -1, "resetButton.exists");
+expect(resetButtonIndex < viewToggleIndex && viewToggleIndex < themeToggleIndex, "resetButton.orderBeforeViewAndTheme");
+expect(html.includes('aria-label="Reset all factors to the default profile"'), "resetButton.accessibleLabel");
+expect(script.includes('document.getElementById("resetButton").addEventListener("click"'), "resetButton.clickHandler");
+expect(script.includes("state = cloneState(DEFAULT_STATE);"), "resetButton.usesDefaultState");
+expect(script.includes("localStorage.removeItem(STORAGE_KEY);"), "resetButton.clearsStoredFactors");
+expect(css.includes(".reset-button"), "resetButton.styles");
 expect(html.includes('id="viewToggle"'), "viewMode.toggleButton");
 expect(html.includes('id="themeToggle"'), "themeMode.singleButton");
 expect(html.includes('aria-label="Theme: System. Click to switch theme."'), "themeMode.systemDefaultAccessibleLabel");

@@ -675,7 +675,7 @@
       .filter((targetClb) => !secondLanguageMatches || languageClbList(state, "second").some((clb) => clb < targetClb))
       .map((targetClb) => ({
         id: `second-language-clb-${targetClb}`,
-        title: `${targetLanguage === "french" ? "🇫🇷" : "🇬🇧"} Raise second ${languageName(targetLanguage)} to ${benchmarkAcronymForLanguage(targetLanguage)} ${targetClb}+`,
+        title: `${targetLanguage === "french" ? "🇫🇷" : "🇬🇧"} Raise second-language ${languageName(targetLanguage)} to ${benchmarkAcronymForLanguage(targetLanguage)} ${targetClb}+`,
         mutate(next) {
           setSecondLanguageScenario(next, targetClb);
         }
@@ -691,7 +691,7 @@
       .filter((targetClb) => !hasLanguageAllAtLeast(state, "french", targetClb))
       .map((targetClb) => ({
         id: `french-nclc-${targetClb === 7 ? "seven" : "nine"}`,
-        title: `🇫🇷 Reach French NCLC ${targetClb} in all four abilities`,
+        title: `🇫🇷 Raise French to NCLC ${targetClb} in all four abilities`,
         mutate(next) {
           setFrenchScenario(next, targetClb);
         }

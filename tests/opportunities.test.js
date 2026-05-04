@@ -12,6 +12,19 @@ const {
 
 const { languageScoreOptionLabel, scenarioDefinitions, scoreOpportunities } = api;
 
+function assertLanguageTitle(scenario, { language, benchmark, secondLanguage = false, allowOtherBenchmark = false }) {
+  assert.match(scenario.title, /\bRaise\b/);
+  assert.match(scenario.title, new RegExp(`\\b${language}\\b`));
+  assert.match(scenario.title, new RegExp(`\\b${benchmark}\\b`));
+  if (secondLanguage) {
+    assert.match(scenario.title, /\bsecond-language\b/);
+  }
+  if (!allowOtherBenchmark) {
+    const otherBenchmark = benchmark === "NCLC" ? "CLB" : "NCLC";
+    assert.doesNotMatch(scenario.title, new RegExp(`\\b${otherBenchmark}\\b`));
+  }
+}
+
 test("builds certificate opportunity under skill transferability", () => {
   const start = fixtureState({
     maritalStatus: "single",
@@ -53,16 +66,19 @@ test("builds French and second-language opportunities with correct benchmark lab
 
   const frenchSeven = scenarioById(start, "french-nclc-seven");
   const frenchNine = scenarioById(start, "french-nclc-nine");
-  const frenchClbFive = scenarioById(start, "second-language-clb-5");
+  const frenchFive = scenarioById(start, "second-language-clb-5");
 
+  assertLanguageTitle(frenchSeven, { language: "French", benchmark: "NCLC" });
   assert.equal(frenchSeven.delta, 62);
   assert.equal(componentDeltaByLabel(frenchSeven, "Second official language"), 12);
   assert.equal(componentDeltaByLabel(frenchSeven, "Additional"), 50);
+  assertLanguageTitle(frenchNine, { language: "French", benchmark: "NCLC" });
   assert.equal(frenchNine.delta, 72);
   assert.equal(componentDeltaByLabel(frenchNine, "Second official language"), 22);
   assert.equal(componentDeltaByLabel(frenchNine, "Additional"), 50);
-  assert.equal(frenchClbFive.delta, 4);
-  assert.equal(componentDeltaByLabel(frenchClbFive, "Second official language"), 4);
+  assert.equal(frenchFive.delta, 4);
+  assertLanguageTitle(frenchFive, { language: "French", benchmark: "NCLC", secondLanguage: true });
+  assert.equal(componentDeltaByLabel(frenchFive, "Second official language"), 4);
 
   assert.equal(
     languageScoreOptionLabel({ language: "english" }, { clb: 7, listening: "6.0" }, "listening"),
@@ -95,6 +111,12 @@ test("does not duplicate French opportunity when French is the first language", 
   assert.equal(componentDeltaByLabel(englishAdditional, "Additional"), 25);
   assert.equal(scenarioDefinitions(start).some((scenario) => scenario.id.startsWith("french-nclc")), false);
   assert.equal(scenarioDefinitions(start).some((scenario) => scenario.id === "second-language-clb-7"), true);
+  assertLanguageTitle(englishAdditional, { language: "English", benchmark: "CLB", allowOtherBenchmark: true });
+  assertLanguageTitle(scenarioById(start, "second-language-clb-7"), {
+    language: "English",
+    benchmark: "CLB",
+    secondLanguage: true
+  });
 });
 
 test("builds first-language improvement cards through transferability milestones", () => {
@@ -128,10 +150,10 @@ test("builds first-language improvement cards through transferability milestones
   );
 
   const frenchFirstStart = { ...clbSixStart, ...languageFixture("first", "tef", "E") };
-  assert.equal(
-    scenarioDefinitions(frenchFirstStart).some((scenario) => scenario.title === "🇫🇷 Raise French to NCLC 8+ in all four abilities"),
-    true
-  );
+  assertLanguageTitle(scenarioById(frenchFirstStart, "first-language-clb-8"), {
+    language: "French",
+    benchmark: "NCLC"
+  });
 });
 
 test("builds work-experience and education opportunities without duplicates", () => {

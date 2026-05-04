@@ -1105,9 +1105,7 @@
       ensureLanguageScoreState(prefix);
       const group = document.querySelector(`[data-language-group="${prefix}"]`);
       const test = getLanguageTest(state, prefix);
-      if (group && group.hasAttribute("data-hide-when-no-test")) {
-        group.hidden = test.value === "none";
-      }
+      syncLanguageGroupVisibility(group, test);
       document.querySelectorAll(`[data-score-select="${prefix}"]`).forEach((select) => {
         const ability = abilityFromField(select.dataset.field, prefix);
         select.innerHTML = test.scores.map((score) => {
@@ -1117,6 +1115,12 @@
         select.disabled = test.value === "none";
       });
     });
+  }
+
+  function syncLanguageGroupVisibility(group, test) {
+    if (group && group.hasAttribute("data-hide-when-no-test")) {
+      group.hidden = test.value === "none";
+    }
   }
 
   function ensureLanguageScoreState(prefix) {
@@ -1441,11 +1445,15 @@
     }).join("");
   }
 
-  function renderScenarios() {
-    const scenarios = scenarioDefinitions(state)
-      .map((definition) => buildScenario(state, definition))
+  function scoreOpportunities(inputState) {
+    return scenarioDefinitions(inputState)
+      .map((definition) => buildScenario(inputState, definition))
       .filter((scenario) => scenario.delta > 0)
       .sort((a, b) => b.delta - a.delta);
+  }
+
+  function renderScenarios() {
+    const scenarios = scoreOpportunities(state);
     const opportunityAgeNote = document.getElementById("opportunityAgeNote");
     if (opportunityAgeNote) {
       opportunityAgeNote.hidden = ageNumber(state.age) < 27;
@@ -1885,6 +1893,7 @@
     scoreProfile,
     buildScenario,
     scenarioDefinitions,
+    scoreOpportunities,
     sanitizeStoredState,
     polygonFactors,
     normalizeViewMode,
@@ -1897,6 +1906,7 @@
     languageScoreOptions,
     languageScoreOptionLabel,
     secondOfficialLanguageTestOptions,
+    syncLanguageGroupVisibility,
     normalizeThemeMode,
     nextThemeMode,
     themeModeIcon

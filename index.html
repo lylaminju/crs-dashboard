@@ -127,56 +127,14 @@
         <div class="factor-group">
           <div class="factor-label">
             <span class="factor-title">
-              <span class="factor-title-text">Work experience</span>
+              <span class="factor-title-text">Canadian skilled work</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for Canadian skilled work" data-source-tooltip="Official source: Core"><span class="source-link-icon" aria-hidden="true"></span></a>
             </span>
-            <small>Skilled TEER 0, 1, 2 or 3</small>
+            <small>Last 10 years</small>
           </div>
-          <div class="language-panel">
-            <div class="factor-label">
-              <span class="factor-title">
-                <span class="factor-title-text">Canadian skilled work</span>
-                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#core" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for Canadian skilled work" data-source-tooltip="Official source: Core"><span class="source-link-icon" aria-hidden="true"></span></a>
-              </span>
-              <small>Last 10 years</small>
-            </div>
-            <div class="work-grid" id="canadianWorkControls"></div>
-            <div class="field mobile-button-select">
-              <select id="canadianWorkMobile" data-field="canadianWork" aria-label="Canadian skilled work"></select>
-            </div>
-          </div>
-          <div class="language-panel">
-            <div class="factor-label">
-              <span class="factor-title">
-                <span class="factor-title-text">Foreign skilled work</span>
-                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#skill" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for foreign skilled work" data-source-tooltip="Official source: Skill"><span class="source-link-icon" aria-hidden="true"></span></a>
-              </span>
-              <small>Total years</small>
-            </div>
-            <div class="work-grid" id="foreignWorkControls"></div>
-            <div class="field mobile-button-select">
-              <select id="foreignWorkMobile" data-field="foreignWork" aria-label="Foreign skilled work"></select>
-            </div>
-          </div>
-        </div>
-
-        <div class="factor-group">
-          <div class="factor-label">
-            <span class="factor-title">
-              <span class="factor-title-text">Additional factors</span>
-              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#extra" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for additional factors" data-source-tooltip="Official source: Additional"><span class="source-link-icon" aria-hidden="true"></span></a>
-            </span>
-            <small>Maximum 600 additional points</small>
-          </div>
-          <div class="select-grid">
-            <div class="field">
-              <label for="canadianEducation">Canadian education</label>
-              <select id="canadianEducation" data-field="canadianEducation"></select>
-            </div>
-          </div>
-          <div class="switch-grid additional-switches">
-            <label class="switch"><input type="checkbox" data-field="sibling"> Sibling in Canada</label>
-            <label class="switch"><input type="checkbox" data-field="nomination"> Provincial nomination</label>
-            <label class="switch"><input type="checkbox" data-field="certificate"> Certificate of qualification</label>
+          <div class="work-grid" id="canadianWorkControls"></div>
+          <div class="field mobile-button-select">
+            <select id="canadianWorkMobile" data-field="canadianWork" aria-label="Canadian skilled work"></select>
           </div>
         </div>
 
@@ -222,7 +180,6 @@
             <div class="factor-label">
               <span class="factor-title">
                 <span class="factor-title-text">Spouse Canadian work</span>
-                <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#spouse" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for spouse Canadian work" data-source-tooltip="Official source: Spouse"><span class="source-link-icon" aria-hidden="true"></span></a>
               </span>
               <small>Last 10 years</small>
             </div>
@@ -230,6 +187,55 @@
             <div class="field mobile-button-select">
               <select id="spouseCanadianWorkMobile" data-field="spouseCanadianWork" aria-label="Spouse Canadian work"></select>
             </div>
+          </div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label skill-transferability-label">
+            <span class="factor-title">
+              <span class="factor-title-text">Skill transferability</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#skill" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for skill transferability" data-source-tooltip="Official source: Skill"><span class="source-link-icon" aria-hidden="true"></span></a>
+            </span>
+          </div>
+          <div class="skill-transferability-controls">
+            <div class="skill-transferability-item foreign-work-panel">
+              <div class="skill-transferability-field-title">Foreign skilled work</div>
+              <div class="work-grid foreign-work-grid" id="foreignWorkControls"></div>
+              <div class="field mobile-button-select">
+                <select id="foreignWorkMobile" data-field="foreignWork" aria-label="Foreign skilled work"></select>
+              </div>
+            </div>
+            <div class="skill-transferability-item certificate-item">
+              <div class="switch-grid certificate-switch-grid">
+                <label class="switch certificate-switch">
+                  <input type="checkbox" data-field="certificate">
+                  <span class="certificate-switch-text">
+                    <span>Certificate of qualification</span>
+                    <span>(Trade occupations)</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="factor-group">
+          <div class="factor-label">
+            <span class="factor-title">
+              <span class="factor-title-text">Additional points</span>
+              <a class="factor-source-link" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/check-score/crs-criteria.html#extra" target="_blank" rel="noopener noreferrer" aria-label="Open Canada.ca CRS criteria source for additional points" data-source-tooltip="Official source: Additional"><span class="source-link-icon" aria-hidden="true"></span></a>
+            </span>
+            <small>Maximum 600 additional points</small>
+          </div>
+          <div class="select-grid">
+            <div class="field full">
+              <label for="canadianEducation">Canadian education</label>
+              <select id="canadianEducation" data-field="canadianEducation"></select>
+            </div>
+          </div>
+          <div class="switch-grid additional-switches">
+            <label class="switch"><input type="checkbox" data-field="sibling"> Sibling in Canada</label>
+            <label class="switch"><input type="checkbox" data-field="nomination"> Provincial nomination</label>
           </div>
         </div>
       </div>

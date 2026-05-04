@@ -547,6 +547,75 @@ expect(sourceIcon.includes("M13.213 9.787"), "officialLinks.flowbiteLinkOutlineP
 expect(sourceIcon.includes('stroke="#858585"'), "officialLinks.sourceIconVisibleStroke");
 expect(sourceIconBlue.includes('stroke="#78a8ff"'), "officialLinks.sourceIconBlueStroke");
 expect(html.includes('id="education" data-field="education" aria-label="Education"'), "officialLinks.educationSelectAccessibleName");
+expect(html.includes('<div class="field full">\n              <label for="canadianEducation">Canadian education</label>'), "productionUi.canadianEducationFullWidthField");
+const maritalFactorIndex = html.indexOf('<span class="factor-title-text">Marital status</span>');
+const ageFactorIndex = html.indexOf('<span class="factor-title-text">Age</span>');
+const educationFactorIndex = html.indexOf('<span class="factor-title-text">Education</span>');
+const languageFactorIndex = html.indexOf('<span class="factor-title-text">Official languages</span>');
+const canadianWorkFactorIndex = html.indexOf('<span class="factor-title-text">Canadian skilled work</span>');
+const spouseFactorIndex = html.indexOf('<span class="factor-title-text">Spouse or partner factors</span>');
+const skillFactorIndex = html.indexOf('<span class="factor-title-text">Skill transferability</span>');
+const additionalPointsIndex = html.indexOf('<span class="factor-title-text">Additional points</span>');
+const certificateInputIndex = html.indexOf('data-field="certificate"');
+expect(html.includes('<div class="factor-label skill-transferability-label">\n            <span class="factor-title">\n              <span class="factor-title-text">Skill transferability</span>'), "factorOrder.skillTransferabilityLabelClass");
+expect(!html.includes('<div class="factor-label skill-transferability-label">\n            <span class="factor-title">\n              <span class="factor-title-text">Age</span>'), "factorOrder.noSkillTransferabilityClassOnAge");
+expect([
+  maritalFactorIndex,
+  ageFactorIndex,
+  educationFactorIndex,
+  languageFactorIndex,
+  canadianWorkFactorIndex,
+  spouseFactorIndex,
+  skillFactorIndex,
+  additionalPointsIndex,
+  certificateInputIndex
+].every((index) => index !== -1), "factorOrder.allOfficialSectionsPresent");
+expect(
+  maritalFactorIndex < ageFactorIndex &&
+    ageFactorIndex < educationFactorIndex &&
+    educationFactorIndex < languageFactorIndex &&
+    languageFactorIndex < canadianWorkFactorIndex &&
+    canadianWorkFactorIndex < spouseFactorIndex &&
+    spouseFactorIndex < skillFactorIndex &&
+    skillFactorIndex < additionalPointsIndex,
+  "factorOrder.matchesOfficialCrsSequence"
+);
+expect(skillFactorIndex < certificateInputIndex && certificateInputIndex < additionalPointsIndex, "factorOrder.certificateUnderSkillTransferability");
+expect(!html.includes('<span class="factor-title-text">Work experience</span>'), "factorOrder.noMixedWorkExperienceGroup");
+expect(!html.includes('<span class="factor-title-text">Additional factors</span>'), "factorOrder.additionalPointsLabel");
+expect(!html.includes('aria-label="Open Canada.ca CRS criteria source for spouse Canadian work"'), "officialLinks.noNestedSpouseCanadianWorkLink");
+expect(!html.includes('aria-label="Open Canada.ca CRS criteria source for foreign skilled work"'), "officialLinks.noNestedForeignWorkLink");
+expect(!html.includes('aria-label="Open Canada.ca CRS criteria source for certificate of qualification"'), "officialLinks.noNestedCertificateLink");
+expect(css.includes(".skill-transferability-label .factor-title-text {\n  white-space: nowrap;"), "factorOrder.skillTransferabilityTitleNoWrap");
+expect(!html.includes("Education, foreign work and trade certificate combinations"), "factorOrder.noSkillTransferabilityHelperText");
+expect(!html.includes("<small>Total years</small>"), "factorOrder.noForeignWorkHelperText");
+expect(!html.includes('<span class="factor-title-text">Certificate of qualification</span>'), "factorOrder.noDuplicateCertificateTitle");
+expect(!html.includes("<small>Trade occupations</small>"), "factorOrder.noDuplicateCertificateHelper");
+expect(html.includes('<div class="skill-transferability-controls">'), "factorOrder.skillTransferabilityTwoColumnWrapper");
+expect(html.includes('<div class="skill-transferability-item foreign-work-panel">\n              <div class="skill-transferability-field-title">Foreign skilled work</div>'), "factorOrder.foreignWorkBorderedControl");
+expect(html.includes('<div class="work-grid foreign-work-grid" id="foreignWorkControls"></div>'), "factorOrder.foreignWorkTightButtonGridClass");
+expect(html.includes('<div class="skill-transferability-item certificate-item">'), "factorOrder.certificateFlatControl");
+expect(!html.includes('<div class="language-panel certificate-panel">'), "factorOrder.noCertificatePanelBox");
+expect(html.includes('<label class="switch certificate-switch">\n                  <input type="checkbox" data-field="certificate">\n                  <span class="certificate-switch-text">\n                    <span>Certificate of qualification</span>\n                    <span>(Trade occupations)</span>'), "factorOrder.certificateSwitchTwoLineLabel");
+expect(css.includes(".skill-transferability-controls {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr) max-content;"), "factorOrder.skillTransferabilityTwoColumns");
+expect(css.includes("gap: 16px;\n  align-items: stretch;"), "factorOrder.skillTransferabilityEqualHeightColumns");
+expect(css.includes(".foreign-work-panel {\n  padding: 12px;\n  border: 1px solid var(--line);"), "factorOrder.foreignWorkPanelBorder");
+expect(css.includes(".skill-transferability-field-title {\n  margin-bottom: 8px;"), "factorOrder.foreignWorkCompactLabel");
+expect(css.includes(".foreign-work-grid {\n  display: grid;\n  grid-template-columns: repeat(4, minmax(0, 1fr));"), "factorOrder.foreignWorkButtonsFillColumn");
+expect(css.includes(".foreign-work-grid button {\n  width: 100%;"), "factorOrder.foreignWorkButtonsStretch");
+expect(css.includes(".certificate-switch-grid {\n  grid-template-columns: max-content;"), "factorOrder.certificateSwitchContentWidthGrid");
+expect(css.includes("grid-template-columns: max-content;\n  height: 100%;"), "factorOrder.certificateSwitchGridFullHeight");
+expect(css.includes(".certificate-item {\n  display: grid;"), "factorOrder.certificateItemStretches");
+expect(!css.includes(".certificate-panel"), "factorOrder.noCertificatePanelCss");
+expect(css.includes(".certificate-switch {\n  align-items: center;"), "factorOrder.certificateSwitchVerticallyCentersContent");
+expect(css.includes("gap: 8px;\n  height: 100%;\n  width: max-content;\n  max-width: 100%;"), "factorOrder.certificateSwitchFitsContentAndHeight");
+expect(css.includes("padding-inline: 8px 14px;"), "factorOrder.certificateSwitchExtraRightPadding");
+expect(css.includes(".certificate-switch-text {\n  display: grid;"), "factorOrder.certificateSwitchTextStacks");
+expect(css.includes("gap: 4px;\n  line-height: 1.12;"), "factorOrder.certificateSwitchTextLineGap");
+expect(css.includes("line-height: 1.12;"), "factorOrder.certificateSwitchTightLineHeight");
+const certificateSwitchCss = css.slice(css.indexOf(".certificate-switch {"), css.indexOf(".certificate-switch-text {"));
+expect(!certificateSwitchCss.includes("white-space: nowrap;"), "factorOrder.certificateSwitchAllowsTwoLines");
+expect(css.includes(".skill-transferability-controls {\n    grid-template-columns: 1fr;"), "responsive.skillTransferabilityStacksOnMobile");
 expect(css.includes(".factor-title"), "officialLinks.factorTitleStyle");
 expect(css.includes(".factor-source-link:hover"), "officialLinks.hoverStyle");
 expect(css.includes(".source-link-icon"), "officialLinks.sourceIconStyle");
@@ -628,6 +697,8 @@ expect(css.includes(".bar-track {\n    grid-column: 1 / -1;\n    grid-row: 2;"),
 expect(css.includes(".bar-value {\n    grid-column: 2;\n    grid-row: 1;"), "responsive.phoneBreakdownValueBesideLabel");
 expect(css.includes("@media (max-width: 420px)"), "responsive.narrowPhoneBreakpoint");
 expect(html.includes('data-language-group="second" data-hide-when-no-test hidden'), "productionUi.secondLanguageHiddenByDefault");
+expect(script.includes('group.hasAttribute("data-hide-when-no-test")'), "productionUi.secondLanguageVisibilityUsesBareDataAttribute");
+expect(!script.includes('group.dataset.hideWhenNoTest === "true"'), "productionUi.secondLanguageVisibilityNoStringTrueCheck");
 expect(css.includes(".ability-grid[hidden]"), "productionUi.hiddenAbilityGridCssFile");
 expect(html.includes('<div class="ability-grid" data-language-group="spouse">'), "productionUi.spouseLanguagePanelFormat");
 expect(!html.includes('<div class="field"></div>'), "productionUi.noEmptySpouseGridSpacer");

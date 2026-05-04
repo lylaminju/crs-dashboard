@@ -1105,7 +1105,7 @@
       ensureLanguageScoreState(prefix);
       const group = document.querySelector(`[data-language-group="${prefix}"]`);
       const test = getLanguageTest(state, prefix);
-      if (group && group.dataset.hideWhenNoTest === "true") {
+      if (group && group.hasAttribute("data-hide-when-no-test")) {
         group.hidden = test.value === "none";
       }
       document.querySelectorAll(`[data-score-select="${prefix}"]`).forEach((select) => {

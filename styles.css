@@ -395,6 +395,10 @@ body[data-view="polygon"] .score-rail {
   gap: 6px;
 }
 
+.skill-transferability-label .factor-title-text {
+  white-space: nowrap;
+}
+
 .factor-source-link {
   position: relative;
   display: inline-flex;
@@ -512,6 +516,42 @@ body[data-view="polygon"] .score-rail {
   text-align: center;
 }
 
+.skill-transferability-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.skill-transferability-item {
+  min-width: 0;
+}
+
+.foreign-work-panel {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--subpanel-bg);
+}
+
+.skill-transferability-field-title {
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 760;
+  line-height: 1.15;
+}
+
+.foreign-work-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.foreign-work-grid button {
+  width: 100%;
+  padding-inline: 6px;
+}
+
 .age-grid button {
   width: 100%;
   min-height: 38px;
@@ -623,6 +663,15 @@ select:focus {
   margin-top: 10px;
 }
 
+.certificate-switch-grid {
+  grid-template-columns: max-content;
+  height: 100%;
+}
+
+.certificate-item {
+  display: grid;
+}
+
 .switch {
   display: flex;
   align-items: center;
@@ -635,6 +684,22 @@ select:focus {
   color: var(--muted);
   font-size: 13px;
   font-weight: 740;
+}
+
+.certificate-switch {
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  width: max-content;
+  max-width: 100%;
+  padding-inline: 8px 14px;
+  font-size: 12px;
+}
+
+.certificate-switch-text {
+  display: grid;
+  gap: 4px;
+  line-height: 1.12;
 }
 
 .switch input {
@@ -1399,6 +1464,10 @@ select:focus {
   .select-grid,
   .switch-grid,
   .score-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-transferability-controls {
     grid-template-columns: 1fr;
   }
 
